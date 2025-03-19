@@ -3,7 +3,7 @@ name: lin
 on:
   push:
     branches:
-      - main
+      - main-
     tags:
       - '*'
 jobs:

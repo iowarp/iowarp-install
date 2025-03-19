@@ -21,6 +21,7 @@ jobs:
           autoconf automake autoconf-archive doxygen \
           libboost-dev libboost-fiber-dev libboost-regex-dev \
           libelf-dev openmpi-bin openmpi-common mpi-default-dev python3-dev
+          ./install.sh
       - name: miniconda
         uses: conda-incubator/setup-miniconda@v3
       - name: build-conda
