@@ -22,20 +22,27 @@ jobs:
           libboost-dev libboost-fiber-dev libboost-regex-dev \
           libelf-dev openmpi-bin openmpi-common mpi-default-dev python3-dev
           ./install.sh
-      - name: miniconda
-        uses: conda-incubator/setup-miniconda@v3
-      - name: build-conda
-        run: |
-          conda install -y conda-build
-          conda install -y conda-verify
-          conda install -y anaconda-client
-          conda-build .
+        continue-on-error: true
       - name: upload
         uses: actions/upload-artifact@v4
         with:
-          name: iowarp-0.0.0-py312_0.tar.bz2
-          path: /usr/share/miniconda/envs/test/conda-bld/linux-64/iowarp-0.0.0-py312_0.tar.bz2
-      - name: release
-        if: startsWith(github.ref, 'refs/tags/v')
-        run: |
-          anaconda -t  "${{ secrets.ANACONDA_TOKEN }}" upload /usr/share/miniconda/envs/test/conda-bld/linux-64/iowarp-0.0.0-py312_0.tar.bz2
+          name: config-x64-linux-out.log
+          path: /home/runner/work/iowarp-install/iowarp-install/vcpkg/buildtrees/cte-hermes-shm/config-x64-linux-out.log
+      # - name: miniconda
+      #   uses: conda-incubator/setup-miniconda@v3
+
+      # - name: build-conda
+      #   run: |
+      #     conda install -y conda-build
+      #     conda install -y conda-verify
+      #     conda install -y anaconda-client
+      #     conda-build .
+      # - name: upload
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: iowarp-0.0.0-py312_0.tar.bz2
+      #     path: /usr/share/miniconda/envs/test/conda-bld/linux-64/iowarp-0.0.0-py312_0.tar.bz2
+      # - name: release
+      #   if: startsWith(github.ref, 'refs/tags/v')
+      #   run: |
+      #     anaconda -t  "${{ secrets.ANACONDA_TOKEN }}" upload /usr/share/miniconda/envs/test/conda-bld/linux-64/iowarp-0.0.0-py312_0.tar.bz2
