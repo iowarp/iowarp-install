@@ -3,4 +3,5 @@ xcopy /Y /E ports vcpkg\ports
 cd vcpkg
 call bootstrap-vcpkg.bat
 .\vcpkg install cte-hermes-shm[core]
+.\vcpkg install iowarp-runtime[core]
 
