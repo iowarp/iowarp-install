@@ -9,6 +9,10 @@
 	    "name": "vcpkg-cmake",
 	    "host": true
 	},
+	"boost-fiber",
+	"boost-filesystem",
+	"boost-regex",
+	"boost-system",	
 	"cte-hermes-shm",
 	"pybind11",
 	"snappy"

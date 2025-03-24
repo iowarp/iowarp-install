@@ -15,4 +15,6 @@ class IowarpBase(Package):
 
     version('main', branch='main', preferred=True)
     phases = []
+
+    depends_on('cmake@3.25:')
     

@@ -26,7 +26,6 @@ class Iowarp(Package):
     variant("debug", default=False, description="Build shared libraries")
     variant("vfd", default=False, description="Enable HDF5 VFD")
     variant("ares", default=False, description="Enable full libfabric install")
-    variant("adios", default=False, description="Build Adios tests")
     variant("encrypt", default=False,
             description="Include encryption libraries")
     variant("compress", default=False,
@@ -38,6 +37,7 @@ class Iowarp(Package):
         description="Do not compile the library (used for dev purposes)",
     )
     variant("depsonly", default=False, description="Only install dependencies")
+    variant("ppi", default=True, description="Force install ppi")
 
     depends_on("iowarp-cte")
     depends_on("iowarp-cte -nocompile", when="~nocompile")
@@ -48,7 +48,6 @@ class Iowarp(Package):
     
     depends_on('iowarp-cte+debug', when='+debug')
     depends_on('iowarp-cte+ares', when='+ares')
-    depends_on('iowarp-cte+adios', when='+adios')
     depends_on('iowarp-cte+encrypt', when='+encrypt')
     depends_on('iowarp-cte+compress', when='+compress')
     depends_on('iowarp-cte+python', when='+python')
@@ -58,6 +57,8 @@ class Iowarp(Package):
     depends_on('iowarp-cte+stdio', when='+stdio')
     depends_on('iowarp-cte+vfd', when='+vfd')
 
-    depends_on("py-ppi-jarvis-cd", type=('build', 'run'))
-    depends_on('py-ppi-scspkg', type=('build', 'run'))
-    depends_on("iowarp-base")
+    depends_on('py-ppi-jarvis-cd', when='+ppi', type=('build', 'run'))
+    depends_on('py-ppi-scspkg', when='+ppi', type=('build', 'run'))
+    depends_on('ppi-chi-nettest', when='+ppi', type=('build', 'run'))
+    depends_on('py-iowarp-runtime-util', type=('build', 'run'))
+    depends_on('iowarp-base')
