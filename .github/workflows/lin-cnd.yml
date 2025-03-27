@@ -3,7 +3,7 @@ name: conda
 on:
   push:
     branches:
-      - main
+      - main-
 
 jobs:
   build:
