@@ -37,7 +37,7 @@ COPY module_load.sh /module_load.sh
 ENV USER="root"
 ENV HOME="/root"
 ENV SPACK_DIR="${HOME}/spack"
-ENV SPACK_VERSION="v0.22.2"
+ENV SPACK_VERSION="v0.23.0"
 
 # Install Spack.
 RUN git clone -b ${SPACK_VERSION} https://github.com/spack/spack ${SPACK_DIR} && \
