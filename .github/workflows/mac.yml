@@ -17,7 +17,7 @@ jobs:
           brew install \
           autoconf automake autoconf-archive doxygen \
           boost \
-          libelf open-mpi
+          libelf libomp open-mpi
       - name: test
         shell: bash
         run: |
