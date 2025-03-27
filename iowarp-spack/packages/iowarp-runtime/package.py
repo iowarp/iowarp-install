@@ -54,3 +54,5 @@ class IowarpRuntime(CMakePackage):
     def setup_run_environment(self, env):
         # This is for the interceptors
         env.prepend_path('LD_LIBRARY_PATH', self.prefix.lib)
+        env.prepend_path('CMAKE_MODULE_PATH', self.prefix.cmake)
+        env.prepend_path('CMAKE_PREFIX_PATH', self.prefix.cmake)

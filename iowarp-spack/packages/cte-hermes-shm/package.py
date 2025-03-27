@@ -95,3 +95,7 @@ class CteHermesShm(CMakePackage):
         if '+nocompile' in self.spec:
             args.append(self.define('HSHM_NO_COMPILE', 'ON'))
         return args
+
+    def setup_run_environment(self, env):
+        env.prepend_path('CMAKE_MODULE_PATH', self.prefix.cmake)
+        env.prepend_path('CMAKE_PREFIX_PATH', self.prefix.cmake)

@@ -17,8 +17,6 @@ classifiers = [
   "Development Status :: 3 - Alpha",
   "Topic :: Scientific/Engineering",
 ]
-
-
 dependencies = [
   "numpy",
 ]

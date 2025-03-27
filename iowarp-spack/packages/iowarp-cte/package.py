@@ -86,3 +86,6 @@ class IowarpCte(CMakePackage):
         # This is for the interceptors
         env.prepend_path("LD_LIBRARY_PATH", self.prefix.lib)
         env.prepend_path("PYTHONPATH", self.prefix.lib)
+        env.prepend_path('CMAKE_MODULE_PATH', self.prefix.cmake)
+        env.prepend_path('CMAKE_PREFIX_PATH', self.prefix.cmake)
+        

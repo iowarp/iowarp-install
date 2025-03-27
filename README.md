@@ -6,6 +6,11 @@
 2. `$ source ~/miniconda3/bin/activate`
 3. `$ conda install hyoklee::iowarp`
 
+## docker
+
+1. `$ docker pull iowarp/iowarp-user`
+2. `$ docker run -it iowarp/iowarp-user`
+
 ## snap
 
 1. Install `snapd`.
