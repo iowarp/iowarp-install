@@ -21,6 +21,6 @@ jobs:
       - name: test
         shell: bash
         run: |
+          export LDFLAGS="-L/usr/local/opt/libomp/lib"
+          export CPPFLAGS="-I/usr/local/opt/libomp/include"
           ./install.sh
-
-
