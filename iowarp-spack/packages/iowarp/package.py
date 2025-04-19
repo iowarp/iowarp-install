@@ -62,3 +62,9 @@ class Iowarp(Package):
     depends_on('ppi-chi-nettest', when='+ppi', type=('build', 'run'))
     depends_on('py-iowarp-runtime-util', type=('build', 'run'))
     depends_on('iowarp-base')
+
+    # GPU variants
+    variant("cuda", default=False, description="Enable CUDA support for iowarp")
+    variant("rocm", default=False, description="Enable ROCm support for iowarp")
+    depends_on("iowarp-cte+cuda", when="+cuda")
+    depends_on("iowarp-cte+rocm", when="+rocm")

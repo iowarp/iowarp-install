@@ -4,6 +4,7 @@ class PpiChiNettest(CMakePackage):
     homepage = "https://github.com/iowarp/ppi-chi-nettest.git"
     git = "https://github.com/iowarp/ppi-chi-nettest.git"
     version('main', branch='main', submodules=True)
+    version('priv', branch='main', submodules=True, git='https://github.com/lukemartinlogan/chi-nettest.git')
     
     # Required deps
     # depends_on('cte-hermes-shm@2: +mochi -nocompile', type=('build'))

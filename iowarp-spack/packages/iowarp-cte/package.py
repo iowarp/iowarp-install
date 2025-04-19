@@ -15,8 +15,8 @@ class IowarpCte(CMakePackage):
         "dev", branch="dev",
         git="https://github.com/iowarp/content-transfer-engine.git"
     )
-    version("priv", branch="dev",
-            git="https://github.com/lukemartinlogan/hermes.git")
+    version("priv", branch="main",
+            git="https://github.com/iowarp/content-transfer-engine.git")
 
     # Common across cte-hermes-shm and hermes
     variant("posix", default=True, description="Enable POSIX adapter")
@@ -56,8 +56,15 @@ class IowarpCte(CMakePackage):
     depends_on('py-ppi-jarvis-cd', type=('build'))
     depends_on('iowarp-base')
 
+    # GPU variants
+    variant("cuda", default=False, description="Enable CUDA support for iowarp")
+    variant("rocm", default=False, description="Enable ROCm support for iowarp")
+    depends_on("iowarp-runtime+cuda", when="+cuda")
+    depends_on("iowarp-runtime+rocm", when="+rocm")
+
+
     def cmake_args(self):
-        args = []
+        args = [self.define_from_variant("HERMES_ENABLE_PYTHON","python")]
         if "+debug" in self.spec:
             args.append("-DCMAKE_BUILD_TYPE=Debug")
         else:
@@ -71,15 +78,21 @@ class IowarpCte(CMakePackage):
             elif "mpich" in self.spec:
                 args.append("-DHERMES_MPICH=ON")
         if "+stdio" in self.spec:
-            args.append("-HERMES_ENABLE_STDIO_ADAPTER=ON")
+            args.append("-DHERMES_ENABLE_STDIO_ADAPTER=ON")
         if "+vfd" in self.spec:
-            args.append("-HERMES_ENABLE_VFD=ON")
+            args.append("-DHERMES_ENABLE_VFD=ON")
         if "+compress" in self.spec:
             args.append(self.define("HERMES_ENABLE_COMPRESS", "ON"))
         if "+encrypt" in self.spec:
             args.append(self.define("HERMES_ENABLE_ENCRYPT", "ON"))
         if "+nocompile" in self.spec or "+depsonly" in self.spec:
             args.append(self.define("HERMES_NO_COMPILE", "ON"))
+        if "+python" in self.spec:
+            args.append(self.define("HERMES_ENABLE_PYTHON", "ON"))
+        if "+cuda" in self.spec:
+            args.append(self.define("HERMES_ENABLE_CUDA", "ON"))
+        if "+rocm" in self.spec:
+            args.append(self.define("HERMES_ENABLE_ROCM", "ON"))
         return args
 
     def setup_run_environment(self, env):

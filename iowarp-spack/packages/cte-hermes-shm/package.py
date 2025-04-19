@@ -75,6 +75,12 @@ class CteHermesShm(CMakePackage):
             description='Build with encryption support')
     depends_on('openssl', when='+encrypt')
 
+    # GPU variants
+    variant("cuda", default=False, description="Enable CUDA support for iowarp")
+    variant("rocm", default=False, description="Enable ROCm support for iowarp")
+    depends_on("cuda", when="+cuda")
+    depends_on("rocm-core", when="+rocm")
+
     def cmake_args(self):
         args = []
         # args.append(self.define('BUILD_HSHM_TESTS', 'OFF'))
@@ -94,6 +100,10 @@ class CteHermesShm(CMakePackage):
             args.append(self.define('HSHM_USE_ELF', 'ON'))
         if '+nocompile' in self.spec:
             args.append(self.define('HSHM_NO_COMPILE', 'ON'))
+        if "+cuda" in self.spec:
+            args.append(self.define("HSHM_ENABLE_CUDA", "ON"))
+        if "+rocm" in self.spec:
+            args.append(self.define("HSHM_ENABLE_ROCM", "ON"))
         return args
 
     def setup_run_environment(self, env):

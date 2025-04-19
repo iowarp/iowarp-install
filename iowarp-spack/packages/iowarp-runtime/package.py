@@ -37,18 +37,28 @@ class IowarpRuntime(CMakePackage):
     depends_on('cte-hermes-shm -nocompile', when='~nocompile')
     depends_on('cte-hermes-shm +nocompile', when='+nocompile')
     depends_on('py-ppi-jarvis-cd', when='+jarvis', type=('build'))
-    depends_on('py-iowarp-runtime-util')
+    depends_on('py-iowarp-runtime-util', type=('build'))
     depends_on('mpi')
     depends_on('iowarp-base')
+
+    # GPU variants
+    variant("cuda", default=False, description="Enable CUDA support for iowarp")
+    variant("rocm", default=False, description="Enable ROCm support for iowarp")
+    depends_on("cte-hermes-shm+cuda", when="+cuda")
+    depends_on("cte-hermes-shm+rocm", when="+rocm")
 
     def cmake_args(self):
         args = []
         if '+debug' in self.spec:
-            args.append('-DCMAKE_BUILD_TYPE=Debug')
+            args.append(self.define('CMAKE_BUILD_TYPE', 'Debug'))
         else:
-            args.append('-DCMAKE_BUILD_TYPE=Release')
+            args.append(self.define('CMAKE_BUILD_TYPE', 'Release'))
         if '+nocompile' in self.spec or '+depsonly' in self.spec:
-            args.append('-DCHIMAERA_NO_COMPILE=ON')
+            args.append(self.define('CHIMAERA_NO_COMPILE', 'ON'))
+        if "+cuda" in self.spec:
+            args.append(self.define("CHIMAERA_ENABLE_CUDA", "ON"))
+        if "+rocm" in self.spec:
+            args.append(self.define("CHIMAERA_ENABLE_CUDA", "ON"))
         return args
 
     def setup_run_environment(self, env):
