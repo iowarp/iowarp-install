@@ -8,7 +8,7 @@ from spack.package import *
 
 class PyPpiJarvisCd(PythonPackage):
     homepage = "grc.iit.edu/docs/jarvis/ppi-jarvis-cd/index"
-    git      = "https://github.com/iowarp/platform-plugins-interface.git"
+    git      = "https://github.com/hyoklee/platform-plugins-interface.git"
 
     import_modules = ['typing']
 
