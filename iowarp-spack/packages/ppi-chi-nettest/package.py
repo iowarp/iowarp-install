@@ -14,6 +14,7 @@ class PpiChiNettest(CMakePackage):
     depends_on('argobots@1.1+affinity')
     depends_on('cereal')
     depends_on('iowarp-base')
+    depends_on('mpi')
 
     def cmake_args(self):
         args = []
