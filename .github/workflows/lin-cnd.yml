@@ -1,9 +1,10 @@
 name: conda
 
 on:
+  workflow_dispatch:
   push:
-    branches:
-      - main-
+     branches:
+       - main
 
 jobs:
   build:
@@ -31,6 +32,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
+          python-version: 3.12
       - name: build-conda
         run: |
           conda install -y conda-build

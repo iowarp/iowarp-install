@@ -4,3 +4,4 @@ cp -r ./ports/* ./vcpkg/ports/
 cd vcpkg
 ./bootstrap-vcpkg.sh
 ./vcpkg install content-transfer-engine
+./vcpkg install content-assimilation-engine

@@ -97,7 +97,7 @@ class CteHermesShm(CMakePackage):
         if '+zmq' in self.spec:
             args.append(self.define('HSHM_ENABLE_ZMQ_TESTS', 'ON'))
         if '+elf' in self.spec:
-            args.append(self.define('HSHM_USE_ELF', 'ON'))
+            args.append(self.define('HSHM_ENABLE_ELF', 'ON'))
         if '+nocompile' in self.spec:
             args.append(self.define('HSHM_NO_COMPILE', 'ON'))
         if "+cuda" in self.spec:

@@ -1,11 +1,10 @@
 name: docker deps
 on:
-  push:
-    branches:
-      - main-
+  workflow_dispatch:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 360
     steps:
       - name: Checkout
         uses: actions/checkout@v4
