@@ -22,7 +22,6 @@ jobs:
           autoconf automake autoconf-archive doxygen \
           libboost-dev libboost-fiber-dev libboost-regex-dev \
           libelf-dev openmpi-bin openmpi-common mpi-default-dev python3-dev
-        #continue-on-error
       - name: upload
         uses: actions/upload-artifact@v4
         with:
@@ -33,8 +32,11 @@ jobs:
         with:
           auto-update-conda: true
           python-version: 3.12
+          channels: conda-forge
       - name: build-conda
         run: |
+          env
+          export CMAKE_PREFIX_PATH=$CONDA_PREFIX
           conda install -y conda-build
           conda install -y conda-verify
           conda install -y anaconda-client
