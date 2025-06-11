@@ -12,6 +12,7 @@ requirements:
     - setuptools
   run:
     - python
+    - iowarp::jarvis_cd
 
 files:
   - README.md
