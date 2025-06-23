@@ -2,7 +2,7 @@
 FROM ubuntu:24.04
 LABEL maintainer="llogan@hawk.iit.edu"
 LABEL version="0.0"
-LABEL description="GRC spack docker image"
+LABEL description="IoWarp spack docker image"
 
 # Disable prompt during packages installation.
 ARG DEBIAN_FRONTEND=noninteractive
