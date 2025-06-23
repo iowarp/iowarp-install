@@ -3,7 +3,7 @@ name: mac
 on:
   push:
     branches:
-      - main
+      - main-
     tags:
       - '*'
 jobs:
