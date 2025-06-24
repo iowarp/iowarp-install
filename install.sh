@@ -1,4 +1,5 @@
 #!/bin/bash
+env
 git clone  --branch 2025.06.13 --single-branch https://github.com/microsoft/vcpkg
 cp -r ./ports/* ./vcpkg/ports/
 cd vcpkg
