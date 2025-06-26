@@ -17,7 +17,7 @@
 	"pybind11",
 	"snappy"
     ],
-    "default-features": ["mpi", "openmp", "python", "shared", "test"],
+    "default-features": ["mpi", "openmp", "shared", "test"],
     "features": {
 	"coverage": {
 	    "description": "Check how well tests cover code"
