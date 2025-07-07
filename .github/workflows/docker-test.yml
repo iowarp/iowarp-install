@@ -24,8 +24,8 @@ jobs:
           context: ./docker
           file: ./docker/iowarp-test.Dockerfile
           platforms: linux/amd64
-          outputs: type=docker,dest=/tmp/image.tar
+          push: true          
           build-args: |
             SHM_SIZE=32gb
           shm-size: 32gb
-          memory: 32gb
+
