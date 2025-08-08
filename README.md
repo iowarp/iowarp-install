@@ -1,5 +1,6 @@
 # IOWarp Install
 
+[![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![IoWarp](https://img.shields.io/badge/IoWarp-GitHub-blue.svg)](http://github.com/iowarp)
 [![GRC](https://img.shields.io/badge/GRC-Website-blue.svg)](https://grc.iit.edu/)
 [![Python](https://img.shields.io/badge/Python-3.7+-yellow.svg)](https://www.python.org/)
@@ -102,6 +103,10 @@ cd iowarp-install
 - `snap/` - Snap package configuration
 - `install.sh` - Main installation script
 - `wrpgit` - Git wrapper utility
+
+## License
+
+IOWarp Install is licensed under the BSD 3-Clause License. You can find the full license text in the source files.
 
 ## Support
 
