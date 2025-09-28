@@ -7,6 +7,7 @@ class CteHermesShm(CMakePackage):
     # Branch versions
     version('main', branch='main', preferred=True)
     version('dev', branch='dev')
+    version('ai', branch='49-refactor-with-ai')
     
     # Main variants
     variant('debug', default=False, description='Build shared libraries')

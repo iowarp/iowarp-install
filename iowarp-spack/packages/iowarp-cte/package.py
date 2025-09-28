@@ -6,16 +6,12 @@ class IowarpCte(CMakePackage):
 
     version(
         "main",
-        branch="main",
-        git="https://github.com/iowarp/content-transfer-engine.git",
+        branch="main", 
         preferred=True,
     )
-    version(
-        "dev", branch="dev",
-        git="https://github.com/iowarp/content-transfer-engine.git"
-    )
-    version("priv", branch="main",
-            git="https://github.com/iowarp/content-transfer-engine.git")
+    version("dev", branch="dev")
+    version("priv", branch="main", submodules=True)
+    version("ai", branch="37-use-the-ai-prompt-runtime", submodules=True)
 
     # Common across cte-hermes-shm and hermes
     variant("posix", default=True, description="Enable POSIX adapter")
@@ -63,35 +59,35 @@ class IowarpCte(CMakePackage):
 
 
     def cmake_args(self):
-        args = [self.define_from_variant("HERMES_ENABLE_PYTHON","python")]
+        args = [self.define_from_variant("CTE_ENABLE_PYTHON","python")]
         if "+debug" in self.spec:
             args.append("-DCMAKE_BUILD_TYPE=Debug")
         else:
             args.append("-DCMAKE_BUILD_TYPE=Release")
         if "+posix" in self.spec:
-            args.append("-DHERMES_ENABLE_POSIX_ADAPTER=ON")
+            args.append("-DCTE_ENABLE_POSIX_ADAPTER=ON")
         if "+mpiio" in self.spec:
-            args.append("-DHERMES_ENABLE_MPIIO_ADAPTER=ON")
+            args.append("-DCTE_ENABLE_MPIIO_ADAPTER=ON")
             if "openmpi" in self.spec:
-                args.append("-DHERMES_OPENMPI=ON")
+                args.append("-DCTE_OPENMPI=ON")
             elif "mpich" in self.spec:
-                args.append("-DHERMES_MPICH=ON")
+                args.append("-DCTE_MPICH=ON")
         if "+stdio" in self.spec:
-            args.append("-DHERMES_ENABLE_STDIO_ADAPTER=ON")
+            args.append("-DCTE_ENABLE_STDIO_ADAPTER=ON")
         if "+vfd" in self.spec:
-            args.append("-DHERMES_ENABLE_VFD=ON")
+            args.append("-DCTE_ENABLE_VFD=ON")
         if "+compress" in self.spec:
-            args.append(self.define("HERMES_ENABLE_COMPRESS", "ON"))
+            args.append(self.define("CTE_ENABLE_COMPRESS", "ON"))
         if "+encrypt" in self.spec:
-            args.append(self.define("HERMES_ENABLE_ENCRYPT", "ON"))
+            args.append(self.define("CTE_ENABLE_ENCRYPT", "ON"))
         if "+nocompile" in self.spec or "+depsonly" in self.spec:
-            args.append(self.define("HERMES_NO_COMPILE", "ON"))
+            args.append(self.define("CTE_NO_COMPILE", "ON"))
         if "+python" in self.spec:
-            args.append(self.define("HERMES_ENABLE_PYTHON", "ON"))
+            args.append(self.define("CTE_ENABLE_PYTHON", "ON"))
         if "+cuda" in self.spec:
-            args.append(self.define("HERMES_ENABLE_CUDA", "ON"))
+            args.append(self.define("CTE_ENABLE_CUDA", "ON"))
         if "+rocm" in self.spec:
-            args.append(self.define("HERMES_ENABLE_ROCM", "ON"))
+            args.append(self.define("CTE_ENABLE_ROCM", "ON"))
         return args
 
     def setup_run_environment(self, env):
