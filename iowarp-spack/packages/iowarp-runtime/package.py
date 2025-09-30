@@ -17,10 +17,6 @@ class IowarpRuntime(CMakePackage):
     variant('nocompile', default=False, description='Do not compile the library (used for dev purposes)')
     variant('depsonly', default=False, description='Only install dependencies')
 
-    depends_on('cte-hermes-shm@main', when='@main')
-    depends_on('cte-hermes-shm@dev', when='@dev')
-    depends_on('cte-hermes-shm@priv', when='@priv')
-    
     depends_on('cte-hermes-shm+compress')
     depends_on('cte-hermes-shm+encrypt')
     depends_on('cte-hermes-shm+elf')

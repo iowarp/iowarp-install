@@ -37,10 +37,7 @@ class IowarpCae(CMakePackage):
 
     depends_on("iowarp-runtime")
     depends_on("iowarp-runtime -nocompile", when="~nocompile")
-    depends_on("iowarp-runtime +nocompile", when="+nocompile")
-    depends_on("iowarp-runtime@main", when="@main")
-    depends_on("iowarp-runtime@priv", when="@priv")
-    depends_on("iowarp-runtime@dev", when="@dev")
+    depends_on("iowarp-runtime +nocompile", when="+nocompile") 
 
     depends_on('cte-hermes-shm+elf')
     depends_on('cte-hermes-shm+debug', when='+debug')
