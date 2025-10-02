@@ -1,58 +1,89 @@
-name: docker all
+name: Docker All
+
 on:
   workflow_dispatch:
-  # push:
-  #   branches: [ main ]
+
+env:
+  REGISTRY: docker.io
+  BASE_IMAGE: iowarp/iowarp-base
+  DEPS_SPACK_IMAGE: iowarp/iowarp-deps-spack
+  DEPS_IMAGE: iowarp/iowarp-deps
+  USER_IMAGE: iowarp/iowarp-user
 
 jobs:
   build:
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
-      - name: Checkout
+      - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          buildkitd-flags: --debug
+
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
+          registry: ${{ env.REGISTRY }}
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
-      - name: Set up QEMU
-        uses: docker/setup-qemu-action@v3
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      - name: Build and push iowarp-base
-        uses: docker/build-push-action@v6
+
+      # Build and push base image
+      - name: Build and push base image
+        uses: docker/build-push-action@v5
         with:
           context: ./docker
           file: ./docker/iowarp-base.Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64
           push: true
-          tags: iowarp/iowarp-base:latest
-      - name: Build and push iowarp-deps-spack
-        uses: docker/build-push-action@v6
+          tags: ${{ env.BASE_IMAGE }}:latest
+          cache-from: type=registry,ref=${{ env.BASE_IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.BASE_IMAGE }}:buildcache,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+
+      # Build and push deps-spack image
+      - name: Build and push deps-spack image
+        uses: docker/build-push-action@v5
         with:
           context: ./docker
           file: ./docker/iowarp-deps-spack.Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64
           push: true
-          tags: iowarp/iowarp-deps-spack:latest
-      - name: Build and push iowarp-deps
-        uses: docker/build-push-action@v6
+          tags: ${{ env.DEPS_SPACK_IMAGE }}:latest
+          cache-from: |
+            type=registry,ref=${{ env.DEPS_SPACK_IMAGE }}:buildcache
+            type=registry,ref=${{ env.BASE_IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.DEPS_SPACK_IMAGE }}:buildcache,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+
+      # Build and push deps image
+      - name: Build and push deps image
+        uses: docker/build-push-action@v5
         with:
           context: ./docker
           file: ./docker/iowarp-deps.Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64
           push: true
-          tags: iowarp/iowarp-deps:latest
-      - name: Build and push iowarp-user
-        uses: docker/build-push-action@v6
+          tags: ${{ env.DEPS_IMAGE }}:latest
+          cache-from: |
+            type=registry,ref=${{ env.DEPS_IMAGE }}:buildcache
+            type=registry,ref=${{ env.DEPS_SPACK_IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.DEPS_IMAGE }}:buildcache,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1
+
+      # Build and push user image
+      - name: Build and push user image
+        uses: docker/build-push-action@v5
         with:
           context: ./docker
           file: ./docker/iowarp-user.Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64
           push: true
-          tags: iowarp/iowarp-user:latest
+          tags: ${{ env.USER_IMAGE }}:latest
+          cache-from: |
+            type=registry,ref=${{ env.USER_IMAGE }}:buildcache
+            type=registry,ref=${{ env.DEPS_IMAGE }}:buildcache
+          cache-to: type=registry,ref=${{ env.USER_IMAGE }}:buildcache,mode=max
+          build-args: |
+            BUILDKIT_INLINE_CACHE=1

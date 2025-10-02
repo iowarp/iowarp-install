@@ -8,12 +8,12 @@ from spack.package import *
 
 class PyPpiJarvisCd(PythonPackage):
     homepage = "grc.iit.edu/docs/jarvis/ppi-jarvis-cd/index"
-    git      = "https://github.com/hyoklee/platform-plugins-interface.git"
+    git      = "https://github.com/iowarp/ppi-jarvis-cd.git"
 
     import_modules = ['typing']
 
     version('main', branch='main', preferred=True)
-    version('priv', branch='main', git='https://github.com/lukemartinlogan/platform-plugins-interface.git')
+    version('dev', branch='dev')
 
     depends_on('python@3:', type=('build', 'run'))
     depends_on('py-setuptools', type=('build', 'run'))

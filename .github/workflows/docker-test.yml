@@ -1,7 +1,7 @@
 name: docker test
 on:
   workflow_dispatch:
-  
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -24,8 +24,9 @@ jobs:
           context: ./docker
           file: ./docker/iowarp-test.Dockerfile
           platforms: linux/amd64
-          push: true          
+          push: true
           build-args: |
-            SHM_SIZE=32gb
-          shm-size: 32gb
+            SHM_SIZE=12gb
+          shm-size: 12gb
+          tags: iowarp/iowarp-test:latest
 

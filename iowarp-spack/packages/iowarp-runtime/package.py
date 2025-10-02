@@ -2,14 +2,13 @@ from spack.package import *
 
 class IowarpRuntime(CMakePackage):
     homepage = "http://www.cs.iit.edu/~scs/assets/projects/Hermes/Hermes.html"
-    git = "https://github.com/iowarp/iowarp-runtime.git"
+    # git = "https://github.com/iowarp/iowarp-runtime.git"
+    git = "https://github.com/hyoklee/iowarp-runtime.git"
 
     version('main',
             branch='main', submodules=True, preferred=True)
     version('dev',
             branch='dev', submodules=True)
-    version('priv',
-            branch='main', submodules=True, git='https://github.com/lukemartinlogan/iowarp-runtime.git')
 
     # Common across cte-hermes-shm and hermes
     variant('debug', default=False, description='Build shared libraries')
@@ -19,10 +18,6 @@ class IowarpRuntime(CMakePackage):
     variant('nocompile', default=False, description='Do not compile the library (used for dev purposes)')
     variant('depsonly', default=False, description='Only install dependencies')
 
-    depends_on('cte-hermes-shm@main', when='@main')
-    depends_on('cte-hermes-shm@dev', when='@dev')
-    depends_on('cte-hermes-shm@priv', when='@priv')
-    
     depends_on('cte-hermes-shm+compress')
     depends_on('cte-hermes-shm+encrypt')
     depends_on('cte-hermes-shm+elf')

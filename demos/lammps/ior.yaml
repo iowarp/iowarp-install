@@ -1,0 +1,38 @@
+name: lammps
+env: iowarp
+pkgs:
+  - pkg_type: chimaera_run
+    pkg_name: chimaera_run
+    sleep: 5
+    do_dbg: false
+    dbg_port: 4000
+    port: 6000
+    modules: ['hermes_hermes_core', 'coeus_rankConsensus', 'coeus_coeus_mdm']
+    data_shm: 8g
+    rdata_shm: 24g
+  - pkg_type: hermes_run
+    pkg_name: hermes_run
+    ram: 4g
+    include: ['/home/llogan/test_ior/*']
+  - pkg_type: hermes_viz
+    pkg_name: hermes_viz
+    port: 9001
+    refresh: .07
+    sleep: 3
+   # Intercept client I/O calls
+  - pkg_type: hermes_api
+    pkg_name: hermes_api
+    mpi: true
+  # Launch IOR
+  - pkg_type: ior
+    pkg_name: ior
+    write: true
+    read: true
+    api: mpiio
+    out: /home/llogan/test_ior/ior.bin  # Output directory
+    xfer: 1m
+    block: 512m
+    do_dbg: false
+    dbg_port: 4001
+    nprocs: 32  # Total number of processes
+    ppn: 32  # Process per node

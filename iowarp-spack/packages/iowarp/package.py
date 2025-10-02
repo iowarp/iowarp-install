@@ -15,9 +15,7 @@ class Iowarp(Package):
     version(
         "dev", branch="dev",
         git="https://github.com/iowarp/content-transfer-engine.git"
-    )
-    version("priv", branch="dev",
-            git="https://github.com/lukemartinlogan/hermes.git")
+    ) 
 
     # Common across cte-hermes-shm and hermes
     variant("posix", default=True, description="Enable POSIX adapter")
@@ -41,10 +39,7 @@ class Iowarp(Package):
 
     depends_on("iowarp-cte")
     depends_on("iowarp-cte -nocompile", when="~nocompile")
-    depends_on("iowarp-cte +nocompile", when="+nocompile")
-    depends_on("iowarp-cte@main", when="@main")
-    depends_on("iowarp-cte@priv", when="@priv")
-    depends_on("iowarp-cte@dev", when="@dev")
+    depends_on("iowarp-cte +nocompile", when="+nocompile") 
     
     depends_on('iowarp-cte+debug', when='+debug')
     depends_on('iowarp-cte+ares', when='+ares')

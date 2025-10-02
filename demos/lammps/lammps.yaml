@@ -1,0 +1,28 @@
+name: lammps
+env: iowarp
+pkgs:
+  - pkg_type: chimaera_run
+    pkg_name: chimaera_run
+    sleep: 5
+    do_dbg: false
+    dbg_port: 4000
+    port: 6000
+    modules: ['hermes_hermes_core', 'coeus_rankConsensus', 'coeus_coeus_mdm']
+    data_shm: 8g
+    rdata_shm: 24g
+  - pkg_type: hermes_run
+    pkg_name: hermes_run
+  - pkg_type: hermes_viz
+    pkg_name: hermes_viz
+    port: 9001
+    refresh: .07
+    sleep: 3
+  - pkg_type: lammps
+    pkg_name: lammps
+    script_location: 2D-lennard-jones-fluid
+    engine: hermes
+    do_dbg: false
+    dbg_port: 4001
+    nprocs: 32
+    ppn: 32
+    

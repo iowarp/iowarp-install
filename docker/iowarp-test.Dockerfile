@@ -35,5 +35,6 @@ RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
 
 # Run pipeline.
 RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
-    spack load iowarp && \
-    jarvis ppl run
+    spack load iowarp
+#    && \
+#    jarvis ppl run

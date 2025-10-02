@@ -32,5 +32,4 @@ RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
 # Setup jarvis.
 RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
     spack load iowarp && \
-    jarvis bootstrap from local && \
-    jarvis rg build
+    jarvis bootstrap from local

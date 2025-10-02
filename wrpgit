@@ -1,0 +1,581 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import git
+import yaml
+import shutil
+from pathlib import Path
+from github import Github, GithubException
+from github import Auth
+from jarvis_util.shell.exec import Exec
+from jarvis_util.shell.local_exec import LocalExecInfo
+from jarvis_util import ColorPrinter, Color
+from jarvis_util.util.argparse import ArgParse
+import json
+import webbrowser
+import http.server
+import socketserver
+import urllib.parse
+from typing import Optional, Dict, Any
+import requests
+
+class WrpPrinter(ColorPrinter):
+    @staticmethod
+    def print_info(message: str):
+        ColorPrinter.print(message, Color.BLUE)
+
+    @staticmethod
+    def print_warn(message: str):
+        ColorPrinter.print(message, Color.YELLOW)
+
+    @staticmethod
+    def print_error(message: str):
+        ColorPrinter.print(message, Color.RED)
+
+    @staticmethod
+    def print_ok(message: str):
+        ColorPrinter.print(message, Color.GREEN)
+
+class OAuthHandler(http.server.SimpleHTTPRequestHandler):
+    def do_GET(self):
+        query_components = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+        
+        # Store the authorization code
+        if 'code' in query_components:
+            self.server.oauth_code = query_components['code'][0]
+            
+            # Send success response
+            self.send_response(200)
+            self.send_header('Content-type', 'text/html')
+            self.end_headers()
+            self.wfile.write(b"Authorization successful! You can close this window.")
+        
+        # Stop the server
+        self.server.running = False
+
+def authenticate_with_oauth(client_id: str, client_secret: str) -> str:
+    """Authenticate using OAuth web flow"""
+    # OAuth endpoints
+    auth_url = f"https://github.com/login/oauth/authorize?client_id={client_id}&scope=repo"
+    token_url = "https://github.com/login/oauth/access_token"
+    
+    # Start local server to receive callback
+    with socketserver.TCPServer(("", 0), OAuthHandler) as httpd:
+        port = httpd.server_address[1]
+        redirect_uri = f"http://localhost:{port}"
+        
+        # Open browser for authorization
+        auth_url_with_redirect = f"{auth_url}&redirect_uri={redirect_uri}"
+        webbrowser.open(auth_url_with_redirect)
+        
+        # Wait for callback
+        httpd.oauth_code = None
+        httpd.running = True
+        while httpd.running:
+            httpd.handle_request()
+        
+        if not httpd.oauth_code:
+            raise Exception("Failed to get authorization code")
+        
+        # Exchange code for token
+        response = requests.post(
+            token_url,
+            data={
+                'client_id': client_id,
+                'client_secret': client_secret,
+                'code': httpd.oauth_code,
+                'redirect_uri': redirect_uri
+            },
+            headers={'Accept': 'application/json'}
+        )
+        
+        if response.status_code != 200:
+            raise Exception("Failed to get access token")
+            
+        return response.json()['access_token']
+
+class GitUrl:
+    """Class to handle GitHub URLs for both HTTPS and SSH access"""
+    def __init__(self, username: str, package_name: str):
+        if username == 'iowarp' and package_name == 'scspkg':
+            username = 'grc-iit'
+        self.url_https = f"https://github.com/{username}/{package_name}.git"
+        self.url_ssh = f"git@github.com:{username}/{package_name}.git"
+
+    def get_url(self, protocol: str) -> str:
+        """Get the URL for the specified protocol.
+        Args:
+            protocol: Either 'ssh' or 'https'
+        Returns:
+            The URL string for the specified protocol
+        """
+        return self.url_ssh if protocol == 'ssh' else self.url_https
+
+    def authenticate(self, token: str) -> Github:
+        """Authenticate with GitHub using token from config"""
+        if not token:
+            raise ValueError("GitHub token is required but not found in config. Please add 'token: your_token' to your wrpgit.yaml file.")
+        return Github(token)
+
+class WrpGit:
+    def __init__(self):
+        """Initialize WrpGit"""
+        self.script_dir = Path(__file__).parent
+        self.iowarp_dir = self.check_iowarp_env()
+        self.config = None
+        self.config_path = self.script_dir / Path('wrpgit.yaml')
+        self.default_config_path = self.script_dir / Path('wrpgit-default.yaml')
+
+    def check_config(self):
+        """Check if config exists and load it"""
+        if not self.config_path.exists():
+            WrpPrinter.print_error(f"Configuration file {self.config_path} does not exist. Run 'wrpgit init' first.")
+            sys.exit(1)
+            
+        try:
+            with open(self.config_path) as f:
+                self.config = yaml.safe_load(f)
+                
+            # Set defaults after loading config
+            self.username = self.config.get('username', 'iowarp')
+            self.protocol = self.config.get('protocol', 'ssh')
+            self.token = self.config.get('token', '')
+            
+        except Exception as e:
+            WrpPrinter.print_error(f"Error loading configuration: {str(e)}")
+            sys.exit(1)
+
+    def check_iowarp_env(self) -> Path:
+        """Check if IOWARP environment variable is set and valid"""
+        iowarp_dir = os.getenv('IOWARP')
+        if not iowarp_dir:
+            WrpPrinter.print_error("IOWARP environment variable is not set")
+            sys.exit(1)
+        return Path(iowarp_dir)
+
+    def check_clone_marker(self):
+        """Check if .wrpgit marker exists"""
+        marker = self.iowarp_dir / '.wrpgit'
+        if not marker.exists():
+            WrpPrinter.print_error(f"{marker} does not exist. Did you run 'wrpgit clone' first?")
+            sys.exit(1)
+
+    def init(self):
+        """Initialize wrpgit configuration"""
+        # Create IOWARP directory if it doesn't exist
+        WrpPrinter.print_info(f"Creating directory {self.iowarp_dir}")
+        self.iowarp_dir.mkdir(parents=True, exist_ok=True)
+        
+         # Create .wrpgit marker
+        marker = self.iowarp_dir / '.wrpgit'
+        if not marker.exists():
+            WrpPrinter.print_info("Creating .wrpgit marker")
+            marker.touch()
+            
+        if self.config_path.exists():
+            WrpPrinter.print_warn(f"Configuration file {self.config_path} already exists, skipping...")
+            return
+        
+        if not self.default_config_path.exists():
+            WrpPrinter.print_error(f"Default configuration file {self.default_config_path} not found")
+            sys.exit(1)
+
+        try:
+            # Copy default config
+            WrpPrinter.print_info(f"Creating configuration file {self.config_path}")
+            shutil.copy2(self.default_config_path, self.config_path)
+            WrpPrinter.print_ok("Successfully initialized wrpgit")
+        except Exception as e:
+            WrpPrinter.print_error(f"Error initializing wrpgit: {str(e)}")
+            sys.exit(1)
+
+    def save_config(self):
+        """Save current configuration to YAML file"""
+        with open(self.config_path, 'w') as f:
+            yaml.dump(self.config, f)
+
+    def clone(self):
+        """Clone all repositories"""
+        self.check_config()
+        WrpPrinter.print_info(f"Creating directory {self.iowarp_dir}")
+        self.iowarp_dir.mkdir(parents=True, exist_ok=True)
+
+        # Save config if it doesn't exist
+        if not self.config_path.exists():
+            self.save_config()
+
+        # Validate protocol
+        if self.config.get('protocol', 'https') not in ['https', 'ssh']:
+            WrpPrinter.print_error(f"Invalid protocol {self.config.get('protocol')}, must be 'https' or 'ssh'")
+            sys.exit(1)
+
+        for module in self.config['modules']:
+            pkg_name = module['name']
+            target_dir = self.iowarp_dir / pkg_name
+            if target_dir.exists():
+                WrpPrinter.print_warn(f"Directory {target_dir} already exists, skipping...")
+                continue
+
+            WrpPrinter.print_info(f"Attempting to clone {pkg_name}...")
+            
+            # Determine which URLs to use based on fork setting
+            if module.get('fork', False):
+                # For forked repos, try user's URL first
+                urls = GitUrl(self.config['username'], pkg_name)
+                url = urls.get_url(self.config['protocol'])
+                WrpPrinter.print_info(f"Repository marked for fork, trying {self.config['protocol'].upper()} URL: {url}")
+                
+                try:
+                    git.Repo.clone_from(url, target_dir)
+                    WrpPrinter.print_ok(f"Successfully cloned {pkg_name} from {self.config['username']}")
+                    
+                    # Add iowarp as a remote for forked repositories
+                    WrpPrinter.print_info(f"Adding iowarp remote for {pkg_name}...")
+                    self.add_remote(target_dir, 'iowarp', 'iowarp')
+                except git.exc.GitCommandError as e:
+                    WrpPrinter.print_error(f"Failed to clone {pkg_name} from {self.config['username']}: {str(e)}")
+                    sys.exit(1)
+            else:
+                # For non-forked repos, try iowarp URL
+                urls = GitUrl('iowarp', pkg_name)
+                url = urls.get_url(self.config['protocol'])
+                WrpPrinter.print_info(f"Trying {self.config['protocol'].upper()} URL: {url}")
+                
+                try:
+                    git.Repo.clone_from(url, target_dir)
+                    WrpPrinter.print_ok(f"Successfully cloned {pkg_name} from iowarp")
+                except git.exc.GitCommandError as e:
+                    WrpPrinter.print_error(f"Failed to clone {pkg_name} from iowarp: {str(e)}")
+                    sys.exit(1)
+
+    def add_remote(self, repo_dir: Path, username: str, alias: str = None):
+        """Add a git remote to a repository"""
+        if alias is None:
+            alias = username
+            
+        try:
+            repo = git.Repo(repo_dir)
+            if alias in repo.remotes:
+                WrpPrinter.print_warn(f"Remote {alias} already exists in {repo_dir.name}, skipping...")
+                return
+                
+            # Use GitUrl to generate the URL
+            urls = GitUrl(username, repo_dir.name)
+            url = urls.get_url(self.config['protocol'])
+            
+            repo.create_remote(alias, url)
+            WrpPrinter.print_ok(f"Added remote {alias} ({url}) to {repo_dir.name}")
+        except git.exc.InvalidGitRepositoryError:
+            WrpPrinter.print_warn(f"{repo_dir} is not a git repository")
+        except Exception as e:
+            WrpPrinter.print_error(f"Error adding remote to {repo_dir}: {str(e)}")
+
+    def pull(self):
+        """Pull updates for all repositories"""
+        self.check_clone_marker()
+        self.check_config()
+        
+        for repo_dir in self.iowarp_dir.iterdir():
+            if not repo_dir.is_dir() or repo_dir.name.startswith('.'):
+                continue
+            
+            try:
+                WrpPrinter.print_info(f"Pulling updates for {repo_dir.name}...")
+                cmd = ['git', 'pull']
+                Exec(' '.join(cmd), LocalExecInfo(cwd=str(repo_dir)))
+                WrpPrinter.print_ok(f"Successfully pulled {repo_dir.name}")
+            except Exception as e:
+                WrpPrinter.print_error(f"Error pulling {repo_dir}: {str(e)}")
+
+    def setup(self):
+        """Setup the environment"""
+        self.check_config()
+        home_dir = str(Path.home())
+        
+        # First create scspkg modules
+        WrpPrinter.print_info("Creating scspkg modules...")
+        for module in self.config['modules']:
+            repo_dir = self.iowarp_dir / module['name']
+            if not repo_dir.is_dir():
+                continue
+                
+            try:
+                WrpPrinter.print_info(f"Creating scspkg module for {module['name']}...")
+                Exec(f"scspkg create {module['name']}", LocalExecInfo(cwd=str(self.iowarp_dir)))
+                if 'depends_on' in module:
+                    Exec(f"scspkg dep add {module['name']} {module['depends_on']}", LocalExecInfo(cwd=str(self.iowarp_dir)))
+                WrpPrinter.print_ok(f"Successfully created scspkg module for {module['name']}")
+            except Exception as e:
+                WrpPrinter.print_error(f"Error creating scspkg module for {module['name']}: {str(e)}")
+                sys.exit(1)
+        
+        # Then handle CMakePresets.json
+        for module in self.config['modules']:
+            if module['type'] != 'cmake':
+                continue
+                
+            repo_dir = self.iowarp_dir / module['name']
+            vscode_dir = repo_dir / '.vscode'
+            presets_file = vscode_dir / 'CMakePresets.json'
+            if vscode_dir.exists() and presets_file.exists():
+                WrpPrinter.print_info(f"Configuring CMakePresets.json for {module['name']}...")
+                with open(presets_file, 'r') as f:
+                    content = f.read().replace('IOWARP_PREFIX', f'{home_dir}/.scspkg/packages/{module["name"]}')
+                
+                with open(repo_dir / 'CMakePresets.json', 'w') as f:
+                    f.write(content)
+                WrpPrinter.print_ok(f"Successfully configured CMakePresets.json for {module['name']}")
+            else:
+                WrpPrinter.print_warn(f"No .vscode directory found in {module['name']}, skipping...")
+        
+        self.env()
+
+    def env(self):
+        """Source environment files"""
+        self.check_config()
+        
+        for module in self.config['modules']:
+            repo_dir = self.iowarp_dir / module['name']
+            if not repo_dir.is_dir():
+                continue
+
+            try:
+                WrpPrinter.print_info(f"Creating env.sh for {module['name']}...")
+                env_file = repo_dir / 'env.sh'
+                with open(env_file, 'w') as f:
+                    if 'depends_on' in module:
+                        f.write(f"module load {module['depends_on']}\n")
+                    f.write("scspkg build profile m=cmake path=.env.cmake\n")
+                    f.write("scspkg build profile m=dotenv path=.env\n")
+
+                WrpPrinter.print_info(f"Sourcing env.sh in {module['name']}...")
+                Exec(f"bash {env_file}", LocalExecInfo(cwd=str(repo_dir)))
+                WrpPrinter.print_ok(f"Successfully sourced env.sh in {module['name']}")
+            except Exception as e:
+                WrpPrinter.print_error(f"Error sourcing env.sh in {module['name']}: {str(e)}")
+
+    def build(self):
+        """Build and install all repositories"""
+        self.check_clone_marker()
+        self.check_config()
+        
+        for module in self.config['modules']:
+            if not module['build']:
+                continue
+
+            repo_dir = self.iowarp_dir / module['name']
+            if module['type'] == 'cmake':
+                cmake_file = repo_dir / 'CMakeLists.txt'
+                presets_file = repo_dir / 'CMakePresets.json'
+                if cmake_file.exists() and presets_file.exists():
+                    build_dir = repo_dir / 'build'
+                    WrpPrinter.print_info(f"Building {module['name']}...")
+                    build_dir.mkdir(exist_ok=True)
+                    
+                    cmd = ['cmake', '..']
+                    if module['preset']:
+                        cmd.extend(['--preset', module['preset']])
+                    
+                    try:
+                        WrpPrinter.print_info(f"Running CMake for {module['name']}...")
+                        node = Exec(' '.join(cmd), LocalExecInfo(cwd=str(build_dir)))
+                        if node.exit_code != 0:
+                            raise Exception(f"CMake configure failed with exit code {node.exit_code}")
+                            
+                        WrpPrinter.print_info(f"Building {module['name']}...")
+                        node = Exec('cmake --build .', LocalExecInfo(cwd=str(build_dir)))
+                        if node.exit_code != 0:
+                            raise Exception(f"CMake build failed with exit code {node.exit_code}")
+                            
+                        WrpPrinter.print_info(f"Installing {module['name']}...")
+                        node = Exec('cmake --install .', LocalExecInfo(cwd=str(build_dir)))
+                        if node.exit_code != 0:
+                            raise Exception(f"CMake install failed with exit code {node.exit_code}")
+                            
+                        WrpPrinter.print_ok(f"Successfully built and installed {module['name']}")
+                    except Exception as e:
+                        WrpPrinter.print_error(f"Error building/installing {module['name']}: {str(e)}")
+                        sys.exit(1)
+            elif module['type'] == 'python':
+                try:
+                    WrpPrinter.print_info(f"Building {module['name']}...")
+                    req_file = repo_dir / 'requirements.txt'
+                    if req_file.exists():
+                        node = Exec('pip install -r requirements.txt', LocalExecInfo(cwd=str(repo_dir)))
+                        if node.exit_code != 0:
+                            raise Exception(f"pip install requirements failed with exit code {node.exit_code}")
+                            
+                    node = Exec('pip install -e .', LocalExecInfo(cwd=str(repo_dir)))
+                    if node.exit_code != 0:
+                        raise Exception(f"pip install package failed with exit code {node.exit_code}")
+                        
+                    WrpPrinter.print_ok(f"Successfully built {module['name']}")
+                except Exception as e:
+                    WrpPrinter.print_error(f"Error building {module['name']}: {str(e)}")
+                    sys.exit(1)
+
+    def clean(self):
+        """Clean all build directories"""
+        self.check_clone_marker()
+        self.check_config()
+        
+        for module in self.config['modules']:
+            if module['type'] != 'cmake':
+                continue
+
+            repo_dir = self.iowarp_dir / module['name']
+            build_dir = repo_dir / 'build'
+            if build_dir.exists():
+                try:
+                    WrpPrinter.print_info(f"Cleaning build directory for {module['name']}...")
+                    shutil.rmtree(build_dir)
+                    WrpPrinter.print_ok(f"Successfully cleaned build directory for {module['name']}")
+                except Exception as e:
+                    WrpPrinter.print_error(f"Error cleaning build directory for {module['name']}: {str(e)}")
+
+    def fork(self):
+        """Fork all repositories marked for forking in config"""
+        self.check_config()
+        # Check token is available
+        if not self.token:
+            WrpPrinter.print_error("GitHub token is required for forking. Please add 'token: your_token' to your wrpgit.yaml file.")
+            sys.exit(1)
+
+        # Create GitHub instance
+        try:
+            g = Github(self.token)
+        except Exception as e:
+            WrpPrinter.print_error(f"Failed to authenticate with GitHub: {e}")
+            sys.exit(1)
+
+        try:
+            # Iterate through modules marked for forking
+            for module in self.config['modules']:
+                if not module.get('fork', False):
+                    continue
+
+                module_name = module['name']
+                WrpPrinter.print_info(f"Attempting to fork {module_name}...")
+
+                try:
+                    # Get the repository
+                    repo = g.get_repo(f"iowarp/{module_name}")
+                    
+                    # Create fork
+                    fork = repo.create_fork()
+                    WrpPrinter.print_ok(f"Successfully forked {module_name}")
+                    
+                except GithubException as e:
+                    WrpPrinter.print_error(f"Failed to fork repository {module_name}: {e}")
+                except Exception as e:
+                    WrpPrinter.print_error(f"An unexpected error occurred while forking {module_name}: {e}")
+                
+        finally:
+            g.close()
+
+    def teardown(self):
+        """Destroy all scspkg modules"""
+        self.check_config()
+        WrpPrinter.print_info("Tearing down all modules...")
+        
+        for module in self.config['modules']:
+            module_name = module['name']
+            WrpPrinter.print_info(f"Destroying module {module_name}")
+            
+            try:
+                # Run scspkg destroy command
+                cmd = f"scspkg destroy {module_name}"
+                result = Exec(cmd, LocalExecInfo())
+                
+                if result.exit_code == 0:
+                    WrpPrinter.print_ok(f"Successfully destroyed {module_name}")
+                else:
+                    WrpPrinter.print_error(f"Failed to destroy {module_name}: {result.stderr}")
+                    
+            except Exception as e:
+                WrpPrinter.print_error(f"Error destroying {module_name}: {str(e)}")
+
+    def recreate(self):
+        """Teardown and setup all modules"""
+        self.check_config()
+        WrpPrinter.print_info("Recreating all modules...")
+        
+        # First teardown
+        self.teardown()
+        
+        # Then setup
+        self.setup()
+        
+        WrpPrinter.print_ok("Recreation complete")
+
+class WrpGitArgParser(ArgParse):
+    def __init__(self):
+        super().__init__()
+        self.script_dir = Path(__file__).parent
+
+    def define_options(self):
+        # Existing commands
+        self.add_cmd('init')
+        self.add_args([])
+
+        self.add_cmd('clone')
+        self.add_args([])
+
+        self.add_cmd('clean')
+        self.add_args([])
+
+        self.add_cmd('setup')
+        self.add_args([])
+
+        self.add_cmd('fork')
+        self.add_args([])
+
+        self.add_cmd('teardown')
+        self.add_args([])
+
+        self.add_cmd('recreate')
+        self.add_args([])
+
+        # Add back build command
+        self.add_cmd('build')
+        self.add_args([])
+
+    def init(self):
+        wrpgit = WrpGit()
+        wrpgit.init()
+
+    def clone(self):
+        wrpgit = WrpGit()
+        wrpgit.clone()
+
+    def clean(self):
+        wrpgit = WrpGit()
+        wrpgit.clean()
+
+    def setup(self):
+        wrpgit = WrpGit()
+        wrpgit.setup()
+
+    def fork(self):
+        wrpgit = WrpGit()
+        wrpgit.fork()
+
+    def teardown(self):
+        wrpgit = WrpGit()
+        wrpgit.teardown()
+
+    def recreate(self):
+        wrpgit = WrpGit()
+        wrpgit.recreate()
+
+    def build(self):
+        wrpgit = WrpGit()
+        wrpgit.build()
+
+def main():
+    args = WrpGitArgParser()
+    args.process_args()
+
+if __name__ == '__main__':
+    main() 

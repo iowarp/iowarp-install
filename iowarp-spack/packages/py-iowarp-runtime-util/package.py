@@ -13,7 +13,7 @@ class PyIowarpRuntimeUtil(PythonPackage):
     import_modules = ['typing']
 
     version('main', branch='main', preferred=True)
-    version('priv', branch='main', git='https://github.com/lukemartinlogan/iowarp-runtime-util.git')
+    version('dev', branch='dev')
 
     depends_on('python@3:', type=('build', 'run'))
     depends_on('py-setuptools', type=('build', 'run'))
