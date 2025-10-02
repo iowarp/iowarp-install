@@ -31,11 +31,7 @@ jobs:
         uses: conda-incubator/setup-miniconda@v3
         with:
           auto-update-conda: true
-<<<<<<< HEAD
           python-version: 3.12.9
-=======
-          python-version: 3.12
->>>>>>> upstream/main
           channels: conda-forge
       - name: build-conda
         run: |
