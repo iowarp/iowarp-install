@@ -3,20 +3,17 @@ name: mac
 on:
   push:
     branches:
-      - main-
-    tags:
-      - '*'
+      - main
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-latest
     steps:
       - name: checkout
         uses: actions/checkout@v4
       - name: install
         run:  |
           brew install \
-          autoconf automake autoconf-archive doxygen \
-          boost \
+          autoconf automake autoconf-archive boost doxygen \
           libelf libomp open-mpi
       - name: test
         shell: bash

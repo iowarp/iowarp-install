@@ -1,16 +1,14 @@
 name: lin
 
 on:
-  workflow_dispatch: 
   push:
     branches:
-      - main-
-    tags:
-      - '*'
-
+      - main
+  workflow_dispatch:
+  
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     steps:
       - name: checkout
         uses: actions/checkout@v4
@@ -21,40 +19,7 @@ jobs:
           autoconf automake autoconf-archive doxygen \
           libboost-dev libboost-fiber-dev libboost-regex-dev \
           libelf-dev openmpi-bin openmpi-common mpi-default-dev python3-dev 
-      - name: network
-        run: |
-          sudo iptables -I DOCKER-USER -j ACCEPT
-          sudo sh -c 'echo "net.ipv4.conf.all.forwarding=1" > /etc/sysctl.d/99-forwarding.conf'
-          sudo ufw allow in on lxdbr0
-          sudo ufw route allow in on lxdbr0
-          sudo ufw route allow out on lxdbr0
-      - name: snapcraft
-        uses: samuelmeuli/action-snapcraft@v3
       - name: test
         shell: bash
         run: |
           ./install.sh
-          sudo snapcraft
-      - name: set
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          tag_name=$(echo "${{ github.ref }}" | cut -d '/' -f 3-)
-          version="${tag_name#v}"
-          echo "Version without 'v': ${version}"
-          echo "IOWARP_VERSION=${version}" >> $GITHUB_ENV
-      - name: get
-        if: startsWith(github.ref, 'refs/tags/')
-        run: |
-          echo ${{ env.IOWARP_VERSION }}
-      - name: upload
-        uses: actions/upload-artifact@v4
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          name: iowarp_${{ env.IOWARP_VERSION }}_amd64.snap.zip
-          path: ./iowarp_${{ env.IOWARP_VERSION }}_amd64.snap
-      - name: release
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
-        with:
-          files: iowarp_${{ env.IOWARP_VERSION }}_amd64.snap
-
