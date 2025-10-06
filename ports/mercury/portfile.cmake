@@ -8,8 +8,11 @@ vcpkg_from_github(
 
 vcpkg_cmake_configure(
     SOURCE_PATH "${SOURCE_PATH}"
-    OPTIONS -DMERCURY_USE_BOOST_PP=ON
-    OPTIONS -DNA_USE_OFI=OFF
+    OPTIONS
+        -DMERCURY_USE_BOOST_PP=ON
+        -DNA_USE_OFI=OFF
+        -DNA_USE_SM=ON
+        -DBUILD_SHARED_LIBS=ON
 )
 
 vcpkg_cmake_install()

@@ -1,8 +1,8 @@
 vcpkg_from_github(
         OUT_SOURCE_PATH SOURCE_PATH
-        REPO iowarp/iowarp-runtime
-        REF "dd8c2c2c52d44ed6098f35bc97cb02d0d26195d8"
-        SHA512 97da58c4724489dbf4c9112de17f866ec909ac204b38d69737173b67b5e0e570919f44a2218c194130d7b5c555417e2bafb54710d96c24181191de0346537214
+        REPO hyoklee/iowarp-runtime
+        REF "8ad6d543835687fc9eb6b2691282b8740fa9e218"
+        SHA512 15f732911ddf2e96fd0c053246fd4350dc83ef43015c0a19cc23942f289db7f0d701829acb34cafcf69a46ab4868dbca9a310d5bd3ca25ac73b39384ef2724a6
         HEAD_REF main
         PATCHES
         cmake.patch	
