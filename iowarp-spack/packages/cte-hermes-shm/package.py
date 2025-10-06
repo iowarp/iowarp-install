@@ -104,6 +104,8 @@ class CteHermesShm(CMakePackage):
             args.append(self.define("HSHM_ENABLE_CUDA", "ON"))
         if "+rocm" in self.spec:
             args.append(self.define("HSHM_ENABLE_ROCM", "ON"))
+        args.append(self.define("HSHM_BUILD_TESTS", "OFF"))
+        args.append(self.define("HSHM_BUILD_BENCHMARKS", "OFF"))
         return args
 
     def setup_run_environment(self, env):
