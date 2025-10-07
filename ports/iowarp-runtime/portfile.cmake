@@ -1,11 +1,9 @@
 vcpkg_from_github(
         OUT_SOURCE_PATH SOURCE_PATH
         REPO hyoklee/iowarp-runtime
-        REF "8ad6d543835687fc9eb6b2691282b8740fa9e218"
+        REF "75289e008c9a081c50855d31d0b4316310dcc735"
         SHA512 15f732911ddf2e96fd0c053246fd4350dc83ef43015c0a19cc23942f289db7f0d701829acb34cafcf69a46ab4868dbca9a310d5bd3ca25ac73b39384ef2724a6
         HEAD_REF main
-        PATCHES
-        cmake.patch	
 )
 
 vcpkg_check_features(OUT_FEATURE_OPTIONS FEATURE_OPTIONS

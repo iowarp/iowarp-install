@@ -18,7 +18,6 @@ jobs:
       - name: test
         shell: bash
         run: |
-          ls /usr/local/opt/libomp
-          export LDFLAGS="-L/usr/local/opt/libomp/lib"
-          export CPPFLAGS="-I/usr/local/opt/libomp/include"
+          export LDFLAGS="-L/opt/homebrew/opt/libomp/lib"
+          export CPPFLAGS="-I/opt/homebrew/opt/libomp/include"	  
           ./install.sh
