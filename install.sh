@@ -5,4 +5,5 @@ git clone  --branch 2025.06.13 --single-branch https://github.com/microsoft/vcpk
 cp -r ./ports/* ./vcpkg/ports/
 cd vcpkg
 ./bootstrap-vcpkg.sh
-./vcpkg install content-transfer-engine
+# ./vcpkg install content-transfer-engine
+./vcpkg install content-assimilation-engine

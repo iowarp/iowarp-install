@@ -4,5 +4,5 @@ cd vcpkg
 call bootstrap-vcpkg.bat
 REM .\vcpkg install cte-hermes-shm[core]
 REM .\vcpkg install iowarp-runtime[core]
-.\vcpkg install content-assimilation-engine[poco,s3]
+.\vcpkg install content-assimilation-engine[poco,aws]
 
