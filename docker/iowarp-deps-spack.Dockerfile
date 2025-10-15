@@ -6,6 +6,10 @@ LABEL description="IOWarp dependencies Docker image"
 # Disable prompt during packages installation.
 ARG DEBIAN_FRONTEND=noninteractive
 
+# Change iowarp to 
+RUN cd iowarp-install && \
+    git checkout 53-point-to-ai-code-in-spack
+
 # Update iowarp-install repo
 RUN cd iowarp-install && \
     git pull origin main
