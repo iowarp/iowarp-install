@@ -1,4 +1,4 @@
-FROM iowarp/iowarp-base:ai
+FROM iowarp/iowarp-base:latest
 LABEL maintainer="llogan@hawk.iit.edu"
 LABEL version="0.0"
 LABEL description="IOWarp dependencies Docker image"
