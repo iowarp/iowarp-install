@@ -25,4 +25,4 @@ jobs:
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/amd64
           push: true
-          tags: iowarp/iowarp-deps-spack:latest
+          tags: iowarp/iowarp-deps-spack:ai
