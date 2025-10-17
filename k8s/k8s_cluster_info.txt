@@ -1,0 +1,3 @@
+SLURM_JOB_ID=5558
+SLURM_JOB_NODELIST=ares-comp-[18-21]
+NODES=ares-comp-18 ares-comp-19 ares-comp-20 ares-comp-21 
