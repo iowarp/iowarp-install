@@ -24,8 +24,8 @@ RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \\
     cp -r $(spack location -i iowarp-cte)/bin/* /usr/bin || true && \\
     cp -r $(spack location -i cte-hermes-shm)/bin/* /usr/bin || true && \\
     for pkg in $(spack find --format '{name}' | grep '^py-'); do \\
-    cp -r $(spack location -i $pkg)/lib/python3.11/site-packages/* $SITE_PACKAGES/ 2>/dev/null || true; \\
-    cp -r $(spack location -i $pkg)/bin/* /usr/bin 2>/dev/null || true; \\
+        cp -r $(spack location -i $pkg)/lib/python3.11/site-packages/* $SITE_PACKAGES/ 2>/dev/null || true; \\
+        cp -r $(spack location -i $pkg)/bin/* /usr/bin 2>/dev/null || true; \\
     done && \\
     sed -i '1s|.*|#!/usr/bin/python3|' /usr/bin/jarvis && \\
     echo "Spack packages copied to /usr directory"
