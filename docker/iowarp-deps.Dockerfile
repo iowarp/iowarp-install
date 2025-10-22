@@ -12,6 +12,12 @@ RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
 
 # Copy all relevant spack packages to /usr directory
 RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \\
+    which spack && \
+    spack load iowarp && \\
+    cp -r $(spack location -i python)/bin/* /usr/bin || true 
+
+# Copy all relevant spack packages to /usr directory
+RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \\
     spack load iowarp && \\
     cp -r $(spack location -i python)/bin/* /usr/bin || true && \\
     cp -r $(spack location -i py-pip)/bin/* /usr/bin || true && \\
@@ -22,11 +28,7 @@ RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \\
     cp -r $(spack location -i mpi)/bin/* /usr/bin || true && \\
     cp -r $(spack location -i iowarp-runtime)/bin/* /usr/bin || true && \\
     cp -r $(spack location -i iowarp-cte)/bin/* /usr/bin || true && \\
-    cp -r $(spack location -i cte-hermes-shm)/bin/* /usr/bin || true 
-
-# Copy all relevant spack packages to /usr directory
-RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \\
-    spack load iowarp && \\
+    cp -r $(spack location -i cte-hermes-shm)/bin/* /usr/bin || true && \\
     for pkg in $(spack find --format '{name}' | grep '^py-'); do \\
         cp -r $(spack location -i $pkg)/lib/python3.11/site-packages/* $SITE_PACKAGES/ 2>/dev/null || true; \\
         cp -r $(spack location -i $pkg)/bin/* /usr/bin 2>/dev/null || true; \\
