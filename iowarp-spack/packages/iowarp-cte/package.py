@@ -20,7 +20,6 @@ class IowarpCte(CMakePackage):
     variant("debug", default=False, description="Build shared libraries")
     variant("vfd", default=False, description="Enable HDF5 VFD")
     variant("ares", default=False, description="Enable full libfabric install")
-    variant("adios", default=False, description="Build Adios tests")
     variant("encrypt", default=False,
             description="Include encryption libraries")
     variant("compress", default=False,
@@ -45,7 +44,6 @@ class IowarpCte(CMakePackage):
     depends_on('cte-hermes-shm+mpiio')
     depends_on('cte-hermes-shm+ares', when='+ares')
     depends_on('cte-hermes-shm+vfd', when='+vfd')
-    depends_on('cte-hermes-shm+adios', when='+adios')
     depends_on('cte-hermes-shm+encrypt', when='+encrypt')
     depends_on('cte-hermes-shm+compress', when='+compress')
     depends_on('py-ppi-jarvis-cd', type=('build'))
