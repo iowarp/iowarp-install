@@ -8,7 +8,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Install iowarp.
 RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
-    spack install -y iowarp@ai +posix +mpiio +vfd +python
+    spack install -y iowarp +posix +mpiio +vfd +python
 
 # Copy all relevant spack packages to /usr directory
 RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
