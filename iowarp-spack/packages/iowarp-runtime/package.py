@@ -33,7 +33,6 @@ class IowarpRuntime(CMakePackage):
     depends_on('cte-hermes-shm+boost')
     depends_on('cte-hermes-shm+ares', when='+ares')
     depends_on('cte-hermes-shm+zmq')
-    depends_on('cte-hermes-shm+python')
     depends_on('cte-hermes-shm+cuda', when="+cuda")
     depends_on('cte-hermes-shm+rocm', when="+rocm")
     depends_on('py-ppi-jarvis-cd', when='+jarvis', type=('build'))
