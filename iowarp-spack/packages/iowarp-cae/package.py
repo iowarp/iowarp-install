@@ -35,6 +35,8 @@ class IowarpCae(CMakePackage):
     depends_on('iowarp-base+vfd', when='+vfd')
     depends_on('iowarp-base+cuda', when='+cuda')
     depends_on('iowarp-base+rocm', when='+rocm')
+    depends_on('iowarp-base+mpi', when='+mpiio')
+    depends_on('iowarp-base+elf')
 
     depends_on("iowarp-runtime")
     depends_on('iowarp-runtime+debug', when='+debug')

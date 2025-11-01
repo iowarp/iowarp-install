@@ -17,7 +17,6 @@ class CteHermesShm(CMakePackage):
     variant('vfd', default=False, description='Build with HDF5 support')
     variant('zmq', default=True, description='Build ZeroMQ tests')
     variant('elf', default=False, description='Build elf toolkit')
-    variant('python', default=False, description='Build python')
     variant('jarvis', default=True, description='Install jarvis deployment tool')
 
     # Required deps
@@ -27,11 +26,13 @@ class CteHermesShm(CMakePackage):
     depends_on('iowarp-base+encrypt', when='+encrypt')
     depends_on('iowarp-base+cuda', when='+cuda')
     depends_on('iowarp-base+rocm', when='+rocm')
+    depends_on('iowarp-base+mochi', when='+mochi')
+    depends_on('iowarp-base+ares', when='+ares')
+    depends_on('iowarp-base+elf', when='+elf')
+    depends_on('iowarp-base+mpi', when='+mpiio')
 
     # Machine variants
     variant('ares', default=False, description='Build in ares')
-    depends_on('libfabric fabrics=sockets,tcp,udp,verbs,mlx,rxm,rxd,shm',
-               when='+ares')
 
     # Additional variants
     variant('compress', default=False, description='Build with compression support')
@@ -40,10 +41,7 @@ class CteHermesShm(CMakePackage):
     variant("rocm", default=False, description="Enable ROCm support for iowarp")
 
     # Direct dependencies (non-external packages)
-    depends_on('mochi-thallium+cereal', when='+mochi')
-    depends_on('argobots@1.1+affinity', when='+mochi')
-    depends_on('py-ppi-jarvis-cd', when='+jarvis', type=('build'))
-    depends_on('py-pybind11', when='+python')
+    depends_on('py-ppi-jarvis-cd', when='+jarvis', type=('build')) 
 
     def cmake_args(self):
         args = []

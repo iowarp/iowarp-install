@@ -21,6 +21,10 @@ class IowarpBase(Package):
     variant("encrypt", default=False, description="Include encryption libraries")
     variant("compress", default=False, description="Include compression libraries")
     variant("ares", default=False, description="Enable full libfabric install")
+    variant("mochi", default=True, description="Build with mochi-thallium support")
+    variant("elf", default=False, description="Build elf toolkit")
+    variant("adios2", default=False, description="Build with ADIOS2 support")
+    variant("mpi", default=True, description="Build with MPI support")
     variant("cuda", default=False, description="Enable CUDA support")
     variant("rocm", default=False, description="Enable ROCm support")
 
@@ -28,13 +32,22 @@ class IowarpBase(Package):
     depends_on('catch2@3.0.1')
     depends_on('yaml-cpp')
     depends_on('doxygen')
-    depends_on('libelf')
     depends_on('cereal')
     depends_on('boost@1.7: +context +fiber +coroutine +regex +system +filesystem +serialization +pic +math')
-    depends_on('mpi')
-    depends_on('hdf5', when='+vfd')
     depends_on('libzmq')
-    depends_on('adios2')
+
+    # Conditional core dependencies
+    depends_on('libelf', when='+elf')
+    depends_on('mpi', when='+mpi')
+    depends_on('hdf5', when='+vfd')
+    depends_on('adios2', when='+adios2')
+
+    # Ares variant (libfabric)
+    depends_on('libfabric fabrics=sockets,tcp,udp,verbs,mlx,rxm,rxd,shm', when='+ares')
+
+    # Mochi variant
+    depends_on('mochi-thallium+cereal', when='+mochi')
+    depends_on('argobots@1.1+affinity', when='+mochi')
     depends_on('python')
     depends_on('py-pip')
 
