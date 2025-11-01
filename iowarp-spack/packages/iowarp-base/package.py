@@ -48,8 +48,6 @@ class IowarpBase(Package):
     # Mochi variant
     depends_on('mochi-thallium+cereal', when='+mochi')
     depends_on('argobots@1.1+affinity', when='+mochi')
-    depends_on('python')
-    depends_on('py-pip')
 
     # Compression libraries (conditional on +compress)
     depends_on('lzo', when='+compress')
@@ -69,8 +67,8 @@ class IowarpBase(Package):
     depends_on('cuda', when='+cuda')
     depends_on('rocm-core', when='+rocm')
 
+    depends_on('python')
+    depends_on('py-pip')
     depends_on('py-setuptools')
-    depends_on('py-pandas')
-    depends_on('py-pyyaml')
     # depends_on('gh')
 
