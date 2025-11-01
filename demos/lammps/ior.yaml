@@ -17,7 +17,7 @@ pkgs:
   - pkg_type: hermes_viz
     pkg_name: hermes_viz
     port: 9001
-    refresh: .07
+    refresh: 1
     sleep: 3
    # Intercept client I/O calls
   - pkg_type: hermes_api
@@ -30,9 +30,9 @@ pkgs:
     read: true
     api: mpiio
     out: /home/llogan/test_ior/ior.bin  # Output directory
-    xfer: 1m
+    xfer: 64m
     block: 512m
     do_dbg: false
     dbg_port: 4001
-    nprocs: 32  # Total number of processes
+    nprocs: 16  # Total number of processes
     ppn: 32  # Process per node

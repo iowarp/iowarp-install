@@ -16,5 +16,48 @@ class IowarpBase(Package):
     version('main', branch='main', preferred=True)
     phases = []
 
+    # Variants that affect package selections
+    variant("vfd", default=False, description="Enable HDF5 VFD")
+    variant("encrypt", default=False, description="Include encryption libraries")
+    variant("compress", default=False, description="Include compression libraries")
+    variant("ares", default=False, description="Enable full libfabric install")
+    variant("cuda", default=False, description="Enable CUDA support")
+    variant("rocm", default=False, description="Enable ROCm support")
+
     depends_on('cmake@3.25:')
+    depends_on('catch2@3.0.1')
+    depends_on('yaml-cpp')
+    depends_on('doxygen')
+    depends_on('libelf')
+    depends_on('cereal')
+    depends_on('boost')
+    depends_on('mpi')
+    depends_on('hdf5', when='+vfd')
+    depends_on('libzmq')
+    depends_on('adios2')
+    depends_on('python')
+    depends_on('py-pip')
+
+    # Compression libraries (conditional on +compress)
+    depends_on('lzo', when='+compress')
+    depends_on('bzip2', when='+compress')
+    depends_on('zstd', when='+compress')
+    depends_on('lz4', when='+compress')
+    depends_on('zlib', when='+compress')
+    depends_on('xz', when='+compress')
+    depends_on('brotli', when='+compress')
+    depends_on('snappy', when='+compress')
+    depends_on('c-blosc2', when='+compress')
+
+    # Encryption libraries (conditional on +encrypt)
+    depends_on('openssl', when='+encrypt')
+
+    # GPU support (conditional)
+    depends_on('cuda', when='+cuda')
+    depends_on('rocm-core', when='+rocm')
+
+    depends_on('py-setuptools')
+    depends_on('py-pandas')
+    depends_on('py-pyyaml')
     # depends_on('gh')
+

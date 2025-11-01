@@ -15,7 +15,13 @@ class Iowarp(Package):
     version(
         "dev", branch="dev",
         git="https://github.com/iowarp/content-transfer-engine.git"
-    ) 
+    )
+    version("priv", branch="dev",
+            git="https://github.com/lukemartinlogan/hermes.git")
+    version(
+        "ai", branch="dev",
+        git="https://github.com/iowarp/content-transfer-engine.git"
+    )
 
     # Common across cte-hermes-shm and hermes
     variant("posix", default=True, description="Enable POSIX adapter")
@@ -37,9 +43,19 @@ class Iowarp(Package):
     variant("depsonly", default=False, description="Only install dependencies")
     variant("ppi", default=True, description="Force install ppi")
 
+    depends_on("cte-hermes-shm")
+    depends_on("cte-hermes-shm@main", when="@main")
+    depends_on("cte-hermes-shm@dev", when="@dev")
+    depends_on("cte-hermes-shm@priv", when="@priv")
+    depends_on("cte-hermes-shm@ai", when="@ai")
+
     depends_on("iowarp-cte")
     depends_on("iowarp-cte -nocompile", when="~nocompile")
-    depends_on("iowarp-cte +nocompile", when="+nocompile") 
+    depends_on("iowarp-cte +nocompile", when="+nocompile")
+    depends_on("iowarp-cte@main", when="@main")
+    depends_on("iowarp-cte@priv", when="@priv")
+    depends_on("iowarp-cte@dev", when="@dev")
+    depends_on("iowarp-cte@ai", when="@ai")
     
     depends_on('iowarp-cte+debug', when='+debug')
     depends_on('iowarp-cte+ares', when='+ares')
@@ -52,10 +68,10 @@ class Iowarp(Package):
     depends_on('iowarp-cte+stdio', when='+stdio')
     depends_on('iowarp-cte+vfd', when='+vfd')
 
-    depends_on('py-ppi-jarvis-cd', when='+ppi', type=('build', 'run'))
-    depends_on('py-ppi-scspkg', when='+ppi', type=('build', 'run'))
-    depends_on('ppi-chi-nettest', when='+ppi', type=('build', 'run'))
-    depends_on('py-iowarp-runtime-util', type=('build', 'run'))
+    depends_on('iowarp-runtime@ai', when='@ai', type=('build', 'run'))
+
+    depends_on('py-ppi-jarvis-cd', when='+ppi', type=('build', 'run')) 
+    depends_on('py-ppi-jarvis-cd@ai', when='@ai', type=('build', 'run')) 
     depends_on('iowarp-base')
 
     # GPU variants

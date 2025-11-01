@@ -8,31 +8,33 @@ class IowarpRuntime(CMakePackage):
             branch='main', submodules=True, preferred=True)
     version('dev',
             branch='dev', submodules=True)
+    version('ai',
+            branch='44-ai-prompt', submodules=True)
 
     # Common across cte-hermes-shm and hermes
     variant('debug', default=False, description='Build shared libraries')
     variant('ares', default=False, description='Enable full libfabric install')
-    variant('zmq', default=False, description='Build ZeroMQ tests')
     variant('jarvis', default=True, description='Install jarvis deployment tool')
     variant('nocompile', default=False, description='Do not compile the library (used for dev purposes)')
     variant('depsonly', default=False, description='Only install dependencies')
 
+    depends_on('cte-hermes-shm')
+    depends_on('cte-hermes-shm@main', when='@main')
+    depends_on('cte-hermes-shm@dev', when='@dev')
+    depends_on('cte-hermes-shm@priv', when='@priv')
     depends_on('cte-hermes-shm+compress')
     depends_on('cte-hermes-shm+encrypt')
     depends_on('cte-hermes-shm+elf')
     depends_on('cte-hermes-shm+mochi')
     depends_on('cte-hermes-shm+debug', when='+debug')
-    depends_on('cte-hermes-shm+mpiio')
     depends_on('cte-hermes-shm+cereal')
     depends_on('cte-hermes-shm+boost')
     depends_on('cte-hermes-shm+ares', when='+ares')
-    depends_on('cte-hermes-shm+zmq', when='+zmq')
+    depends_on('cte-hermes-shm+zmq')
     depends_on('cte-hermes-shm+python')
     depends_on('cte-hermes-shm -nocompile', when='~nocompile')
     depends_on('cte-hermes-shm +nocompile', when='+nocompile')
     depends_on('py-ppi-jarvis-cd', when='+jarvis', type=('build'))
-    depends_on('py-iowarp-runtime-util', type=('build'))
-    depends_on('mpi')
     depends_on('iowarp-base')
 
     # GPU variants

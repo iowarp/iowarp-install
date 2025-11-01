@@ -7,6 +7,7 @@ class CteHermesShm(CMakePackage):
     # Branch versions
     version('main', branch='main', preferred=True)
     version('dev', branch='dev')
+    version('ai', branch='49-refactor-with-ai')
     
     # Main variants
     variant('debug', default=False, description='Build shared libraries')
@@ -15,8 +16,7 @@ class CteHermesShm(CMakePackage):
     variant('boost', default=True, description='Build with boost support')
     variant('mpiio', default=True, description='Build with MPI support')
     variant('vfd', default=False, description='Build with HDF5 support')
-    variant('zmq', default=False, description='Build ZeroMQ tests')
-    variant('adios', default=False, description='Build Adios support')
+    variant('zmq', default=True, description='Build ZeroMQ tests')
     variant('elf', default=False, description='Build elf toolkit')
     variant('python', default=False, description='Build python')
     variant('jarvis', default=True, description='Install jarvis deployment tool')
@@ -44,7 +44,6 @@ class CteHermesShm(CMakePackage):
     depends_on('mpi', when='+mpiio')
     depends_on('hdf5', when='+vfd')
     depends_on('libzmq', when='+zmq')
-    depends_on('adios2', when='+adios')
 
     # Python dependencies
     depends_on('py-ppi-jarvis-cd', when='+jarvis', type=('build'))
@@ -103,6 +102,8 @@ class CteHermesShm(CMakePackage):
             args.append(self.define("HSHM_ENABLE_CUDA", "ON"))
         if "+rocm" in self.spec:
             args.append(self.define("HSHM_ENABLE_ROCM", "ON"))
+        args.append(self.define("HSHM_BUILD_TESTS", "OFF"))
+        args.append(self.define("HSHM_BUILD_BENCHMARKS", "OFF"))
         return args
 
     def setup_run_environment(self, env):
