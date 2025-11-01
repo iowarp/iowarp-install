@@ -8,6 +8,7 @@ class IowarpCte(CMakePackage):
         "main",
         branch="main",
         preferred=True,
+        submodules=True
     )
     version("dev", branch="dev", submodules=True)
     version("priv", branch="main", submodules=True)
