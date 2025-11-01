@@ -1,4 +1,4 @@
-name: docker base
+name: iowarp base
 on:
   workflow_dispatch:
   

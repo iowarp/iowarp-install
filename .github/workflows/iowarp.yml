@@ -1,4 +1,4 @@
-name: docker deps
+name: iowarp
 on:
   workflow_dispatch:
 jobs:
