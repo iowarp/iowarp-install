@@ -14,12 +14,6 @@ class PyPpiJarvisCd(PythonPackage):
 
     version('main', branch='main', preferred=True)
     version('dev', branch='dev')
-    version('ai', branch='36-refactor-with-ai')
 
-    depends_on('python@3:', type=('build', 'run'))
-    depends_on('py-setuptools', type=('build', 'run'))
-    depends_on('py-pip', type=('build', 'run'))
-    depends_on('py-pandas', type=('build', 'run'))
-    depends_on('py-pyyaml', type=('build', 'run'))
     depends_on('iowarp-base')
 

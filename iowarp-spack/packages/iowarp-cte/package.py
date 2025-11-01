@@ -11,7 +11,6 @@ class IowarpCte(CMakePackage):
     )
     version("dev", branch="dev", submodules=True)
     version("priv", branch="main", submodules=True)
-    version("ai", branch="37-use-the-ai-prompt-runtime", submodules=True)
 
     variant("posix", default=True, description="Enable POSIX adapter")
     variant("mpiio", default=True, description="Enable MPI I/O adapter")
@@ -19,22 +18,25 @@ class IowarpCte(CMakePackage):
     variant("debug", default=False, description="Build shared libraries")
     variant("vfd", default=False, description="Enable HDF5 VFD")
     variant("ares", default=False, description="Enable full libfabric install")
-    variant("encrypt", default=False,
-            description="Include encryption libraries")
-    variant("compress", default=False,
-            description="Include compression libraries")
+    variant("encrypt", default=False, description="Include encryption libraries")
+    variant("compress", default=False, description="Include compression libraries")
     variant("python", default=False, description="Install python bindings")
-    variant(
-        "nocompile",
-        default=False,
-        description="Do not compile the library (used for dev purposes)",
-    )
-    variant("depsonly", default=False, description="Only install dependencies")
+    variant("cuda", default=False, description="Enable CUDA support for iowarp")
+    variant("rocm", default=False, description="Enable ROCm support for iowarp")
+
+    depends_on('iowarp-base')
+    depends_on('iowarp-base+vfd', when='+vfd')
+    depends_on('iowarp-base+compress', when='+compress')
+    depends_on('iowarp-base+encrypt', when='+encrypt')
+    depends_on('iowarp-base+cuda', when='+cuda')
+    depends_on('iowarp-base+rocm', when='+rocm')
 
     depends_on("iowarp-runtime")
-    depends_on("iowarp-runtime -nocompile", when="~nocompile")
-    depends_on("iowarp-runtime +nocompile", when="+nocompile")
-    
+    depends_on('iowarp-runtime+debug', when='+debug')
+    depends_on('iowarp-runtime+ares', when='+ares')
+    depends_on("iowarp-runtime+cuda", when="+cuda")
+    depends_on("iowarp-runtime+rocm", when="+rocm")
+
     depends_on('cte-hermes-shm+elf')
     depends_on('cte-hermes-shm+debug', when='+debug')
     depends_on('cte-hermes-shm+mpiio')
@@ -42,14 +44,9 @@ class IowarpCte(CMakePackage):
     depends_on('cte-hermes-shm+vfd', when='+vfd')
     depends_on('cte-hermes-shm+encrypt', when='+encrypt')
     depends_on('cte-hermes-shm+compress', when='+compress')
+    depends_on('cte-hermes-shm+cuda', when='+cuda')
+    depends_on('cte-hermes-shm+rocm', when='+rocm')
     depends_on('py-ppi-jarvis-cd', type=('build'))
-    depends_on('iowarp-base')
-
-    # GPU variants
-    variant("cuda", default=False, description="Enable CUDA support for iowarp")
-    variant("rocm", default=False, description="Enable ROCm support for iowarp")
-    depends_on("iowarp-runtime+cuda", when="+cuda")
-    depends_on("iowarp-runtime+rocm", when="+rocm")
 
 
     def cmake_args(self):
@@ -74,8 +71,6 @@ class IowarpCte(CMakePackage):
             args.append(self.define("CTE_ENABLE_COMPRESS", "ON"))
         if "+encrypt" in self.spec:
             args.append(self.define("CTE_ENABLE_ENCRYPT", "ON"))
-        if "+nocompile" in self.spec or "+depsonly" in self.spec:
-            args.append(self.define("CTE_NO_COMPILE", "ON"))
         if "+python" in self.spec:
             args.append(self.define("CTE_ENABLE_PYTHON", "ON"))
         if "+cuda" in self.spec:

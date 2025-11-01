@@ -24,33 +24,30 @@ class IowarpCae(CMakePackage):
     variant("stdio", default=True, description="Enable STDIO adapter")
     variant("debug", default=False, description="Build shared libraries")
     variant("vfd", default=False, description="Enable HDF5 VFD")
-    variant(
-        "nocompile",
-        default=False,
-        description="Do not compile the library (used for dev purposes)",
-    )
-    variant("depsonly", default=False, description="Only install dependencies")
+    variant("cuda", default=False, description="Enable CUDA support for iowarp")
+    variant("rocm", default=False, description="Enable ROCm support for iowarp")
 
     # MPI variants
     variant("mpich", default=False, description="Build with MPICH")
     variant("openmpi", default=False, description="Build with OpenMPI")
 
+    depends_on('iowarp-base')
+    depends_on('iowarp-base+vfd', when='+vfd')
+    depends_on('iowarp-base+cuda', when='+cuda')
+    depends_on('iowarp-base+rocm', when='+rocm')
+
     depends_on("iowarp-runtime")
-    depends_on("iowarp-runtime -nocompile", when="~nocompile")
-    depends_on("iowarp-runtime +nocompile", when="+nocompile") 
+    depends_on('iowarp-runtime+debug', when='+debug')
+    depends_on("iowarp-runtime+cuda", when="+cuda")
+    depends_on("iowarp-runtime+rocm", when="+rocm")
 
     depends_on('cte-hermes-shm+elf')
     depends_on('cte-hermes-shm+debug', when='+debug')
     depends_on('cte-hermes-shm+mpiio')
     depends_on('cte-hermes-shm+vfd', when='+vfd')
+    depends_on('cte-hermes-shm+cuda', when='+cuda')
+    depends_on('cte-hermes-shm+rocm', when='+rocm')
     depends_on('py-ppi-jarvis-cd', type=('build'))
-    depends_on('iowarp-base')
-
-    # GPU variants
-    variant("cuda", default=False, description="Enable CUDA support for iowarp")
-    variant("rocm", default=False, description="Enable ROCm support for iowarp")
-    depends_on("iowarp-runtime+cuda", when="+cuda")
-    depends_on("iowarp-runtime+rocm", when="+rocm")
 
     def cmake_args(self):
         args = []
@@ -70,8 +67,6 @@ class IowarpCae(CMakePackage):
             args.append("-DCAE_ENABLE_STDIO_ADAPTER=ON")
         if "+vfd" in self.spec:
             args.append("-DCAE_ENABLE_VFD=ON")
-        if "+nocompile" in self.spec or "+depsonly" in self.spec:
-            args.append(self.define("CAE_NO_COMPILE", "ON"))
         if "+cuda" in self.spec:
             args.append(self.define("CAE_ENABLE_CUDA", "ON"))
         if "+rocm" in self.spec:

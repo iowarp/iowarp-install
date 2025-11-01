@@ -8,15 +8,17 @@ class IowarpRuntime(CMakePackage):
             branch='main', submodules=True, preferred=True)
     version('dev',
             branch='dev', submodules=True)
-    version('ai',
-            branch='44-ai-prompt', submodules=True)
 
-    # Common across cte-hermes-shm and hermes
+    # Common variants
     variant('debug', default=False, description='Build shared libraries')
     variant('ares', default=False, description='Enable full libfabric install')
     variant('jarvis', default=True, description='Install jarvis deployment tool')
-    variant('nocompile', default=False, description='Do not compile the library (used for dev purposes)')
-    variant('depsonly', default=False, description='Only install dependencies')
+    variant("cuda", default=False, description="Enable CUDA support for iowarp")
+    variant("rocm", default=False, description="Enable ROCm support for iowarp")
+
+    depends_on('iowarp-base')
+    depends_on('iowarp-base+cuda', when='+cuda')
+    depends_on('iowarp-base+rocm', when='+rocm')
 
     depends_on('cte-hermes-shm')
     depends_on('cte-hermes-shm@main', when='@main')
@@ -32,16 +34,9 @@ class IowarpRuntime(CMakePackage):
     depends_on('cte-hermes-shm+ares', when='+ares')
     depends_on('cte-hermes-shm+zmq')
     depends_on('cte-hermes-shm+python')
-    depends_on('cte-hermes-shm -nocompile', when='~nocompile')
-    depends_on('cte-hermes-shm +nocompile', when='+nocompile')
+    depends_on('cte-hermes-shm+cuda', when="+cuda")
+    depends_on('cte-hermes-shm+rocm', when="+rocm")
     depends_on('py-ppi-jarvis-cd', when='+jarvis', type=('build'))
-    depends_on('iowarp-base')
-
-    # GPU variants
-    variant("cuda", default=False, description="Enable CUDA support for iowarp")
-    variant("rocm", default=False, description="Enable ROCm support for iowarp")
-    depends_on("cte-hermes-shm+cuda", when="+cuda")
-    depends_on("cte-hermes-shm+rocm", when="+rocm")
 
     def cmake_args(self):
         args = []
@@ -49,8 +44,6 @@ class IowarpRuntime(CMakePackage):
             args.append(self.define('CMAKE_BUILD_TYPE', 'Debug'))
         else:
             args.append(self.define('CMAKE_BUILD_TYPE', 'Release'))
-        if '+nocompile' in self.spec or '+depsonly' in self.spec:
-            args.append(self.define('CHIMAERA_NO_COMPILE', 'ON'))
         if "+cuda" in self.spec:
             args.append(self.define("CHIMAERA_ENABLE_CUDA", "ON"))
         if "+rocm" in self.spec:
