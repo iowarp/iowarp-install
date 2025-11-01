@@ -7,6 +7,8 @@ LABEL description="IoWarp spack docker image"
 # Disable prompt during packages installation.
 ARG DEBIAN_FRONTEND=noninteractive
 
+RUN apt-get update && apt-get upgrade -y
+
 # Install basic packages.
 RUN apt install -y \
     openssl libssl-dev openssh-server \
