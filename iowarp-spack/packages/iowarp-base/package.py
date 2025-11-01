@@ -30,7 +30,7 @@ class IowarpBase(Package):
     depends_on('doxygen')
     depends_on('libelf')
     depends_on('cereal')
-    depends_on('boost')
+    depends_on('boost@1.7: +context +fiber +coroutine +regex +system +filesystem +serialization +pic +math')
     depends_on('mpi')
     depends_on('hdf5', when='+vfd')
     depends_on('libzmq')
