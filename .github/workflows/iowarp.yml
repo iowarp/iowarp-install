@@ -1,7 +1,6 @@
-name: docker test
+name: docker deps
 on:
   workflow_dispatch:
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -18,14 +17,12 @@ jobs:
         uses: docker/setup-qemu-action@v3
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - name: Build and export
+      - name: Build and push Dockerfile
         uses: docker/build-push-action@v6
         with:
           context: ./docker
-          file: ./docker/iowarp-test.Dockerfile
+          file: ./docker/iowarp.Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/amd64
           push: true
-          build-args: |
-            SHM_SIZE=12gb
-          shm-size: 12gb
-          tags: iowarp/iowarp-test:latest
+          tags: iowarp/iowarp:latest

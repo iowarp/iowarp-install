@@ -1,0 +1,14 @@
+{
+    "[dockerfile]": {
+        "editor.defaultFormatter": "ms-azuretools.vscode-docker",
+        "editor.formatOnSave": false
+    },
+    "prettier.disableLanguages": [
+        "dockerfile"
+    ],
+    "files.associations": {
+        "Dockerfile*": "dockerfile",
+        "**/docker/*": "dockerfile"
+    }
+}
+
