@@ -70,5 +70,7 @@ class IowarpBase(Package):
     depends_on('python')
     depends_on('py-pip')
     depends_on('py-setuptools')
+    depends_on('py-pandas')
+    depends_on('py-pyyaml')
     # depends_on('gh')
 
