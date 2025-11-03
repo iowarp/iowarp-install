@@ -27,7 +27,6 @@ class IowarpRuntime(CMakePackage):
     depends_on('cte-hermes-shm+compress')
     depends_on('cte-hermes-shm+encrypt')
     depends_on('cte-hermes-shm+elf')
-    depends_on('cte-hermes-shm+mochi')
     depends_on('cte-hermes-shm+debug', when='+debug')
     depends_on('cte-hermes-shm+cereal')
     depends_on('cte-hermes-shm+boost')
