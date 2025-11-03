@@ -1,6 +1,0 @@
-git clone https://github.com/microsoft/vcpkg
-xcopy /Y /E ports vcpkg\ports
-cd vcpkg
-call bootstrap-vcpkg.bat
-.\vcpkg install cte-hermes-shm[core]
-
