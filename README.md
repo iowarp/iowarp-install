@@ -28,41 +28,6 @@ IOWarp Install provides unified installation methods and tools for the IOWarp ec
 
 ## Installation
 
-### uv
-
-Coming soon
-
-### conda
-
-1. Install Miniconda
-2. Activate conda environment:
-```bash
-source ~/miniconda3/bin/activate
-```
-3. Install IOWarp:
-```bash
-conda install iowarp::iowarp
-```
-
-### docker
-
-1. Pull the IOWarp Docker image:
-```bash
-docker pull iowarp/iowarp-user
-```
-2. Run the container:
-```bash
-docker run -it iowarp/iowarp-user
-```
-
-### snap
-
-1. Install snapd package manager
-2. Install IOWarp:
-```bash
-sudo snap install iowarp
-```
-
 ### spack
 
 1. Install Spack package manager
@@ -75,16 +40,19 @@ spack repo add iowarp-spack
 spack install iowarp
 ```
 
-### vcpkg
+### uv
 
-1. Clone the repository:
+Coming soon
+
+### docker
+
+1. Pull the IOWarp Docker image:
 ```bash
-git clone https://github.com/iowarp/iowarp-install
-cd iowarp-install
+docker pull iowarp/iowarp-user
 ```
-2. Run the installation script:
+2. Run the container:
 ```bash
-./install.sh
+docker run -it iowarp/iowarp-user
 ```
 
 ## Continuous Integration
