@@ -40,10 +40,6 @@ spack repo add iowarp-spack
 spack install iowarp
 ```
 
-### uv
-
-Coming soon
-
 ### docker
 
 1. Pull the IOWarp Docker image:
