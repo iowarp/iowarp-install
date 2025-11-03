@@ -11,9 +11,6 @@ RUN cd iowarp-install && \
     git fetch origin && \
     git pull origin main
 
-# Change iowarp to 
-RUN cd iowarp-install
-
 # Update grc-repo repo
 RUN cd grc-repo && \
     git pull origin main
