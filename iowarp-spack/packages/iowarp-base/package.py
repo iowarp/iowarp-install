@@ -17,13 +17,13 @@ class IowarpBase(Package):
     phases = []
 
     # Variants that affect package selections
-    variant("vfd", default=False, description="Enable HDF5 VFD")
-    variant("encrypt", default=False, description="Include encryption libraries")
-    variant("compress", default=False, description="Include compression libraries")
+    variant("vfd", default=True, description="Enable HDF5 VFD")
+    variant("encrypt", default=True, description="Include encryption libraries")
+    variant("compress", default=True, description="Include compression libraries")
     variant("ares", default=False, description="Enable full libfabric install")
-    variant("mochi", default=True, description="Build with mochi-thallium support")
-    variant("elf", default=False, description="Build elf toolkit")
-    variant("adios2", default=False, description="Build with ADIOS2 support")
+    variant("mochi", default=False, description="Build with mochi-thallium support")
+    variant("elf", default=True, description="Build elf toolkit")
+    variant("adios2", default=True, description="Build with ADIOS2 support")
     variant("mpi", default=True, description="Build with MPI support")
     variant("cuda", default=False, description="Enable CUDA support")
     variant("rocm", default=False, description="Enable ROCm support")
