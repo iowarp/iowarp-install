@@ -10,7 +10,7 @@ class CteHermesShm(CMakePackage):
     
     # Main variants
     variant('debug', default=False, description='Build shared libraries')
-    variant('mochi', default=True, description='Build with mochi-thallium support')
+    variant('mochi', default=False, description='Build with mochi-thallium support')
     variant('cereal', default=True, description='Build with cereal support')
     variant('boost', default=True, description='Build with boost support')
     variant('mpiio', default=True, description='Build with MPI support')
