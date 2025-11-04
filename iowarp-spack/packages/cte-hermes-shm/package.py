@@ -17,7 +17,6 @@ class CteHermesShm(CMakePackage):
     variant('vfd', default=False, description='Build with HDF5 support')
     variant('zmq', default=True, description='Build ZeroMQ tests')
     variant('elf', default=False, description='Build elf toolkit')
-    variant('jarvis', default=True, description='Install jarvis deployment tool')
 
     # Required deps
     depends_on('iowarp-base')
@@ -41,7 +40,7 @@ class CteHermesShm(CMakePackage):
     variant("rocm", default=False, description="Enable ROCm support for iowarp")
 
     # Direct dependencies (non-external packages)
-    depends_on('py-ppi-jarvis-cd', when='+jarvis', type=('build')) 
+    depends_on('py-ppi-jarvis-cd', type=('build')) 
 
     def cmake_args(self):
         args = []

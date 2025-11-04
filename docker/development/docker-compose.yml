@@ -1,6 +1,6 @@
 services:
   iowarp:
-    image: iowarp/iowarp-deps:latest
+    image: iowarp/iowarp:latest
     container_name: iowarp  
     shm_size: 8g
     mem_limit: 8g
@@ -11,3 +11,4 @@ services:
     stdin_open: true
     tty: true
     network_mode: host
+    

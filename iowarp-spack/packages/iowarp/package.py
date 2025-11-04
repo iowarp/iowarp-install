@@ -16,8 +16,6 @@ class Iowarp(Package):
         "dev", branch="dev",
         git="https://github.com/iowarp/content-transfer-engine.git"
     )
-    version("priv", branch="dev",
-            git="https://github.com/lukemartinlogan/hermes.git")
 
     # Common variants
     variant("posix", default=True, description="Enable POSIX adapter")
@@ -31,7 +29,6 @@ class Iowarp(Package):
     variant("python", default=False, description="Install python bindings")
     variant("cuda", default=False, description="Enable CUDA support for iowarp")
     variant("rocm", default=False, description="Enable ROCm support for iowarp")
-    variant("ppi", default=True, description="Force install ppi")
 
     depends_on('iowarp-base')
     depends_on('iowarp-base+vfd', when='+vfd')
@@ -47,7 +44,6 @@ class Iowarp(Package):
 
     depends_on("iowarp-cte")
     depends_on("iowarp-cte@main", when="@main")
-    depends_on("iowarp-cte@priv", when="@priv")
     depends_on("iowarp-cte@dev", when="@dev")
     depends_on('iowarp-cte+debug', when='+debug')
     depends_on('iowarp-cte+ares', when='+ares')
@@ -61,4 +57,4 @@ class Iowarp(Package):
     depends_on("iowarp-cte+cuda", when="+cuda")
     depends_on("iowarp-cte+rocm", when="+rocm")
 
-    depends_on('py-ppi-jarvis-cd', when='+ppi', type=('build', 'run'))
+    depends_on('py-ppi-jarvis-cd', type=('build', 'run'))

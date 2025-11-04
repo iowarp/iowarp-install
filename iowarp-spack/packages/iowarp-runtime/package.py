@@ -12,7 +12,6 @@ class IowarpRuntime(CMakePackage):
     # Common variants
     variant('debug', default=False, description='Build shared libraries')
     variant('ares', default=False, description='Enable full libfabric install')
-    variant('jarvis', default=True, description='Install jarvis deployment tool')
     variant("cuda", default=False, description="Enable CUDA support for iowarp")
     variant("rocm", default=False, description="Enable ROCm support for iowarp")
 
@@ -34,7 +33,7 @@ class IowarpRuntime(CMakePackage):
     depends_on('cte-hermes-shm+zmq')
     depends_on('cte-hermes-shm+cuda', when="+cuda")
     depends_on('cte-hermes-shm+rocm', when="+rocm")
-    depends_on('py-ppi-jarvis-cd', when='+jarvis', type=('build'))
+    depends_on('py-ppi-jarvis-cd' type=('build'))
 
     def cmake_args(self):
         args = []

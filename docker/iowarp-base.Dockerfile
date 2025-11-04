@@ -23,7 +23,8 @@ RUN apt install -y \
     coreutils curl \
     gfortran git gpg lsb-release python3 \
     python3-venv unzip zip liblz4-dev \
-    bash jq gdbserver gdb gh nano vim dos2unix
+    bash jq gdbserver gdb gh nano vim dos2unix \
+    clangd clang-format clang-tidy
 
 #------------------------------------------------------------
 # Spack Configuration
@@ -68,3 +69,4 @@ RUN sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_
 
 # Create this directory, as sshd doesn't do so automatically.
 RUN mkdir /run/sshd
+

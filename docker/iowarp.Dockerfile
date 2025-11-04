@@ -15,36 +15,92 @@ RUN cd iowarp-install && \
 RUN cd grc-repo && \
     git pull origin main
 
-# Install iowarp.
-RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
-    spack install -y iowarp +posix +mpiio +vfd +python
+# Clone and install jarvis from git
+RUN cd /root && \
+    git clone https://github.com/iowarp/ppi-jarvis-cd.git && \
+    cd ppi-jarvis-cd && \
+    pip3 install --break-system-packages -r requirements.txt && \
+    pip3 install --break-system-packages . && \
+    cd /root && rm -rf ppi-jarvis-cd
 
-# Copy all relevant spack packages to /usr directory
-RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
-    spack load iowarp && \
-    cp -r $(spack location -i python)/bin/* /usr/bin || true && \
-    cp -r $(spack location -i py-pip)/bin/* /usr/bin || true && \
-    cp -r $(spack location -i python-venv)/bin/* /usr/bin || true && \
-    PYTHON_PATH=$(readlink -f /usr/bin/python3) && \
-    PYTHON_PREFIX=$(dirname $(dirname $PYTHON_PATH)) && \
-    SITE_PACKAGES="$PYTHON_PREFIX/lib/python3.11/site-packages" && \
-    cp -r $(spack location -i mpi)/bin/* /usr/bin || true && \
-    cp -r $(spack location -i iowarp-runtime)/bin/* /usr/bin || true && \
-    cp -r $(spack location -i iowarp-cte)/bin/* /usr/bin || true && \
-    cp -r $(spack location -i cte-hermes-shm)/bin/* /usr/bin || true && \
-    for pkg in $(spack find --format '{name}' | grep '^py-'); do \
-        cp -r $(spack location -i $pkg)/lib/python3.11/site-packages/* $SITE_PACKAGES/ 2>/dev/null || true; \
-        cp -r $(spack location -i $pkg)/bin/* /usr/bin 2>/dev/null || true; \
-    done && \
-    sed -i '1s|.*|#!/usr/bin/python3|' /usr/bin/jarvis && \
-    echo "Spack packages copied to /usr directory"
+# Clone and build cte-hermes-shm from source (with minimal features)
+RUN cd /root && \
+    git clone --recurse-submodules https://github.com/iowarp/cte-hermes-shm.git && \
+    cd cte-hermes-shm && \
+    git checkout main && \
+    mkdir build && cd build && \
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DHSHM_ENABLE_ELF=ON \
+        -DHSHM_BUILD_TESTS=OFF \
+        -DHSHM_BUILD_BENCHMARKS=ON \
+        -DHSHM_BUILD_TESTS=ON \
+        -DHSHM_ENABLE_MPI=ON \
+    .. && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig && \ 
+    cd /root && rm -rf cte-hermes-shm
 
-# Setup scspkg
-RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
-    spack load iowarp && \
-    echo "module use $(scspkg module dir)" >> /root/.bashrc
+# Clone and build iowarp-runtime from source
+RUN cd /root && \
+    git clone --recurse-submodules https://github.com/iowarp/iowarp-runtime.git && \
+    cd iowarp-runtime && \
+    git checkout main && \
+    mkdir build && cd build && \
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        .. && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig && \
+    cd /root && rm -rf iowarp-runtime
 
-# Setup jarvis.
-RUN . "${SPACK_DIR}/share/spack/setup-env.sh" && \
-    spack load iowarp && \
-    jarvis init
+# Clone and build iowarp-cte (content-transfer-engine) from source
+RUN cd /root && \
+    git clone --recurse-submodules https://github.com/iowarp/content-transfer-engine.git && \
+    cd content-transfer-engine && \
+    git checkout main && \
+    mkdir build && cd build && \
+    cmake \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DCMAKE_INSTALL_PREFIX=/usr/local \
+        -DCMAKE_PREFIX_PATH=/usr/local/cmake \
+        -DCTE_ENABLE_POSIX_ADAPTER=ON \
+        -DCTE_ENABLE_MPIIO_ADAPTER=ON \
+        -DCTE_OPENMPI=ON \
+        -DCTE_ENABLE_STDIO_ADAPTER=ON \
+        -DCTE_ENABLE_VFD=ON \
+        -DCTE_ENABLE_PYTHON=ON \
+        .. && \
+    make -j$(nproc) && \
+    make install && \
+    ldconfig && \
+    cd /root && rm -rf content-transfer-engine
+
+# Add iowarp packages to Spack configuration (system packages already configured in base image)
+RUN echo "  py-ppi-jarvis-cd:" >> ~/.spack/packages.yaml && \
+    echo "    externals:" >> ~/.spack/packages.yaml && \
+    echo "    - spec: py-ppi-jarvis-cd" >> ~/.spack/packages.yaml && \
+    echo "      prefix: /usr/local" >> ~/.spack/packages.yaml && \
+    echo "    buildable: false" >> ~/.spack/packages.yaml && \
+    echo "  cte-hermes-shm:" >> ~/.spack/packages.yaml && \
+    echo "    externals:" >> ~/.spack/packages.yaml && \
+    echo "    - spec: cte-hermes-shm@main" >> ~/.spack/packages.yaml && \
+    echo "      prefix: /usr/local" >> ~/.spack/packages.yaml && \
+    echo "    buildable: false" >> ~/.spack/packages.yaml && \
+    echo "  iowarp-runtime:" >> ~/.spack/packages.yaml && \
+    echo "    externals:" >> ~/.spack/packages.yaml && \
+    echo "    - spec: iowarp-runtime@main" >> ~/.spack/packages.yaml && \
+    echo "      prefix: /usr/local" >> ~/.spack/packages.yaml && \
+    echo "    buildable: false" >> ~/.spack/packages.yaml && \
+    echo "  iowarp-cte:" >> ~/.spack/packages.yaml && \
+    echo "    externals:" >> ~/.spack/packages.yaml && \
+    echo "    - spec: iowarp-cte@main" >> ~/.spack/packages.yaml && \
+    echo "      prefix: /usr/local" >> ~/.spack/packages.yaml && \
+    echo "    buildable: false" >> ~/.spack/packages.yaml
+
+# Setup jarvis
+RUN jarvis init
