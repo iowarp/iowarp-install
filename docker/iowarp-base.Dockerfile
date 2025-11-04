@@ -16,13 +16,12 @@ RUN apt install -y \
     gcc g++ gfortran make binutils gpg \
     tar zip xz-utils bzip2 \
     perl m4 libncurses5-dev libxml2-dev diffutils \
-    pkg-config cmake pkg-config \
-    python3 python3-pip doxygen \
+    pkg-config cmake \
+    python3 python3-pip python3-venv doxygen \
     lcov zlib1g-dev hdf5-tools \
     build-essential ca-certificates \
     coreutils curl \
-    gfortran git gpg lsb-release python3 \
-    python3-venv unzip zip liblz4-dev \
+    lsb-release unzip liblz4-dev \
     bash jq gdbserver gdb gh nano vim dos2unix \
     clangd clang-format clang-tidy
 
@@ -69,4 +68,3 @@ RUN sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_
 
 # Create this directory, as sshd doesn't do so automatically.
 RUN mkdir /run/sshd
-
