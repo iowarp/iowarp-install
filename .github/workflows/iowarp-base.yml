@@ -1,14 +1,11 @@
-name: docker user
+name: iowarp base
 on:
-  push:
-    branches:
-      - main-
   workflow_dispatch:
   
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 360
+    timeout-minutes: 800
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,8 +22,11 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./docker
-          file: ./docker/iowarp-user.Dockerfile
+          file: ./docker/iowarp-base.Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/amd64
           push: true
-          tags: iowarp/iowarp-user:latest
+          build-args: |
+            SHM_SIZE=12gb
+          shm-size: 12gb
+          tags: iowarp/iowarp-test:latest

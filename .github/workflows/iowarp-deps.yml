@@ -1,11 +1,13 @@
-name: docker base
+name: iowarp deps
 on:
+  push:
+    branches:
+      - main-
   workflow_dispatch:
-  
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 800
+    timeout-minutes: 360
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -22,9 +24,8 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: ./docker
-          file: ./docker/iowarp-base.Dockerfile
+          file: ./docker/iowarp-deps.Dockerfile
           builder: ${{ steps.buildx.outputs.name }}
           platforms: linux/amd64
           push: true
-          tags: iowarp/iowarp-base:latest
-          
+          tags: iowarp/iowarp-deps:latest

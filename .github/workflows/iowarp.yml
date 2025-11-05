@@ -1,0 +1,64 @@
+name: iowarp
+on:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 360
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build and push ppi-jarvis-cd
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/ppi-jarvis-cd.Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64
+          push: true
+          tags: iowarp/ppi-jarvis-cd:latest
+      - name: Build and push cte-hermes-shm
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/cte-hermes-shm.Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64
+          push: true
+          tags: iowarp/cte-hermes-shm:latest
+      - name: Build and push iowarp-runtime
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/iowarp-runtime.Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64
+          push: true
+          tags: iowarp/iowarp-runtime:latest
+      - name: Build and push iowarp-cte
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/iowarp-cte.Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64
+          push: true
+          tags: iowarp/iowarp-cte:latest
+      - name: Build and push iowarp
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/iowarp.Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64
+          push: true
+          tags: iowarp/iowarp:latest
