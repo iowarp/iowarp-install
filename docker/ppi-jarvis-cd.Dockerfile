@@ -7,21 +7,24 @@ LABEL description="IOWarp ppi-jarvis-cd Docker image"
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Update iowarp-install repo
-RUN cd iowarp-install && \
+RUN cd ${HOME}/iowarp-install && \
     git fetch origin && \
     git pull origin main
 
 # Update grc-repo repo
-RUN cd grc-repo && \
+RUN cd ${HOME}/grc-repo && \
     git pull origin main
 
 # Clone and install jarvis from git
-RUN cd /root && \
+RUN cd ${HOME} && \
     git clone https://github.com/iowarp/ppi-jarvis-cd.git && \
     cd ppi-jarvis-cd && \
     pip3 install --break-system-packages -r requirements.txt && \
     pip3 install --break-system-packages . && \
-    cd /root && rm -rf ppi-jarvis-cd
+    cd ${HOME} && rm -rf ppi-jarvis-cd
+
+# Add user's local bin to PATH
+ENV PATH="${HOME}/.local/bin:${PATH}"
 
 # Add ppi-jarvis-cd to Spack configuration
 RUN echo "  py-ppi-jarvis-cd:" >> ~/.spack/packages.yaml && \

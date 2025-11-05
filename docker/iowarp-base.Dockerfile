@@ -23,15 +23,27 @@ RUN apt install -y \
     coreutils curl \
     lsb-release unzip liblz4-dev \
     bash jq gdbserver gdb gh nano vim dos2unix \
-    clangd clang-format clang-tidy
+    clangd clang-format clang-tidy npm
+
+#------------------------------------------------------------
+# User Configuration
+#------------------------------------------------------------
+
+# Create non-root user with sudo privileges
+RUN useradd -m -s /bin/bash -G sudo iowarp && \
+    echo "iowarp ALL=(ALL) NOPASSWD:ALL" >> /etc/sudoers && \
+    passwd -d iowarp
+
+# Switch to non-root user
+USER iowarp
+ENV USER="iowarp"
+ENV HOME="/home/iowarp"
 
 #------------------------------------------------------------
 # Spack Configuration
 #------------------------------------------------------------
 
 # Setup basic environment.
-ENV USER="root"
-ENV HOME="/root"
 ENV SPACK_DIR="${HOME}/spack"
 ENV SPACK_VERSION="v0.23.0"
 
@@ -41,14 +53,14 @@ RUN git clone -b ${SPACK_VERSION} https://github.com/spack/spack ${SPACK_DIR} &&
     spack external find
 
 # Add GRC Spack repo.
-RUN git clone https://github.com/grc-iit/grc-repo.git && \
+RUN git clone https://github.com/grc-iit/grc-repo.git ${HOME}/grc-repo && \
     . "${SPACK_DIR}/share/spack/setup-env.sh" && \
-    spack repo add grc-repo
+    spack repo add ${HOME}/grc-repo
 
 # Add IOWarp Spack repo.
-RUN git clone https://github.com/iowarp/iowarp-install.git && \
+RUN git clone https://github.com/iowarp/iowarp-install.git ${HOME}/iowarp-install && \
     . "${SPACK_DIR}/share/spack/setup-env.sh" && \
-    spack repo add iowarp-install/iowarp-spack
+    spack repo add ${HOME}/iowarp-install/iowarp-spack
 
 # Update .bashrc.
 RUN echo "source ${SPACK_DIR}/share/spack/setup-env.sh" >> ${HOME}/.bashrc
@@ -57,14 +69,23 @@ RUN echo "source ${SPACK_DIR}/share/spack/setup-env.sh" >> ${HOME}/.bashrc
 # SSH Configuration
 #------------------------------------------------------------
 
-# Disable host key checking.
-RUN echo "Host *" >> ~/.ssh/config
-RUN echo "    StrictHostKeyChecking no" >> ~/.ssh/config
-RUN chmod 600 ~/.ssh/config
+# Configure SSH for iowarp user
+RUN mkdir -p ~/.ssh && \
+    echo "Host *" >> ~/.ssh/config && \
+    echo "    StrictHostKeyChecking no" >> ~/.ssh/config && \
+    chmod 600 ~/.ssh/config
 
-# Enable passwordless SSH.
-# Replaces #PermitEmptyPasswords no with PermitEmptyPasswords yes
-RUN sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config
+# Enable passwordless SSH (requires root)
+USER root
+RUN sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_config && \
+    mkdir -p /run/sshd
 
-# Create this directory, as sshd doesn't do so automatically.
-RUN mkdir /run/sshd
+#------------------------------------------------------------
+# Claude Code Installation
+#------------------------------------------------------------
+
+# Install Claude Code globally using npm
+RUN npm install -g @anthropic-ai/claude-code
+
+# Switch back to iowarp user
+USER iowarp

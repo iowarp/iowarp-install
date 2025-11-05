@@ -7,7 +7,7 @@ LABEL description="IOWarp runtime Docker image"
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Clone and build iowarp-runtime from source
-RUN cd /root && \
+RUN cd ${HOME} && \
     git clone --recurse-submodules https://github.com/iowarp/iowarp-runtime.git && \
     cd iowarp-runtime && \
     git checkout main && \
@@ -17,9 +17,9 @@ RUN cd /root && \
         -DCMAKE_INSTALL_PREFIX=/usr/local \
         .. && \
     make -j$(nproc) && \
-    make install && \
-    ldconfig && \
-    cd /root && rm -rf iowarp-runtime
+    sudo make install && \
+    sudo ldconfig && \
+    cd ${HOME} && rm -rf iowarp-runtime
 
 # Add iowarp-runtime to Spack configuration
 RUN echo "  iowarp-runtime:" >> ~/.spack/packages.yaml && \

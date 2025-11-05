@@ -7,7 +7,7 @@ LABEL description="IOWarp cte-hermes-shm Docker image"
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Clone and build cte-hermes-shm from source (with minimal features)
-RUN cd /root && \
+RUN cd ${HOME} && \
     git clone --recurse-submodules https://github.com/iowarp/cte-hermes-shm.git && \
     cd cte-hermes-shm && \
     git checkout main && \
@@ -22,9 +22,9 @@ RUN cd /root && \
         -DHSHM_ENABLE_MPI=ON \
     .. && \
     make -j$(nproc) && \
-    make install && \
-    ldconfig && \
-    cd /root && rm -rf cte-hermes-shm
+    sudo make install && \
+    sudo ldconfig && \
+    cd ${HOME} && rm -rf cte-hermes-shm
 
 # Add cte-hermes-shm to Spack configuration
 RUN echo "  cte-hermes-shm:" >> ~/.spack/packages.yaml && \

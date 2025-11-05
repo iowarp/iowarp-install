@@ -7,15 +7,16 @@ LABEL description="IOWarp dependencies Docker image"
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Update iowarp-install repo
-RUN cd iowarp-install && \
+RUN cd ${HOME}/iowarp-install && \
     git fetch origin && \
     git pull origin main
 
 # Update grc-repo repo
-RUN cd grc-repo && \
+RUN cd ${HOME}/grc-repo && \
     git pull origin main
 
-# Install core build tools
+# Install core build tools (needs root)
+USER root
 RUN apt-get update && apt-get install -y \
     cmake \
     g++ \
@@ -72,6 +73,10 @@ RUN cd /tmp && \
 # If needed later, can build from source with: -DBUILD_EXAMPLES=OFF -DBUILD_FUZZERS=OFF
 ENV OMPI_ALLOW_RUN_AS_ROOT=1
 ENV OMPI_ALLOW_RUN_AS_ROOT_CONFIRM=1
+
+# Switch back to iowarp user
+USER iowarp
+WORKDIR /home/iowarp
 
 # Configure Spack to use system packages
 RUN mkdir -p ~/.spack && \

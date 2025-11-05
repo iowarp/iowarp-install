@@ -7,7 +7,7 @@ LABEL description="IOWarp content-transfer-engine Docker image"
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Clone and build iowarp-cte (content-transfer-engine) from source
-RUN cd /root && \
+RUN cd ${HOME} && \
     git clone --recurse-submodules https://github.com/iowarp/content-transfer-engine.git && \
     cd content-transfer-engine && \
     git checkout main && \
@@ -24,9 +24,9 @@ RUN cd /root && \
         -DCTE_ENABLE_PYTHON=ON \
         .. && \
     make -j$(nproc) && \
-    make install && \
-    ldconfig && \
-    cd /root && rm -rf content-transfer-engine
+    sudo make install && \
+    sudo ldconfig && \
+    cd ${HOME} && rm -rf content-transfer-engine
 
 # Add iowarp-cte to Spack configuration
 RUN echo "  iowarp-cte:" >> ~/.spack/packages.yaml && \
