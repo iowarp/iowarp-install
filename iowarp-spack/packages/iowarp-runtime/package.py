@@ -2,7 +2,8 @@ from spack.package import *
 
 class IowarpRuntime(CMakePackage):
     homepage = "http://www.cs.iit.edu/~scs/assets/projects/Hermes/Hermes.html"
-    git = "https://github.com/iowarp/iowarp-runtime.git"
+    # git = "https://github.com/iowarp/iowarp-runtime.git"
+    git = "https://github.com/hyoklee/iowarp-runtime.git"
 
     version('main',
             branch='main', submodules=True, preferred=True)
@@ -33,7 +34,7 @@ class IowarpRuntime(CMakePackage):
     depends_on('cte-hermes-shm+zmq')
     depends_on('cte-hermes-shm+cuda', when="+cuda")
     depends_on('cte-hermes-shm+rocm', when="+rocm")
-    depends_on('py-ppi-jarvis-cd' type=('build'))
+    depends_on('py-ppi-jarvis-cd', type=('build'))
 
     def cmake_args(self):
         args = []
