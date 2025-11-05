@@ -2,8 +2,7 @@ from spack.package import *
 
 class IowarpRuntime(CMakePackage):
     homepage = "http://www.cs.iit.edu/~scs/assets/projects/Hermes/Hermes.html"
-    # git = "https://github.com/iowarp/iowarp-runtime.git"
-    git = "https://github.com/hyoklee/iowarp-runtime.git"
+    git = "https://github.com/iowarp/iowarp-runtime.git"
 
     version('main',
             branch='main', submodules=True, preferred=True)
