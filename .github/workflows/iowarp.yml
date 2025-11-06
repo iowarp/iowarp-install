@@ -53,6 +53,15 @@ jobs:
           platforms: linux/amd64
           push: true
           tags: iowarp/iowarp-cte:latest
+      - name: Build and push iowarp-dev
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/iowarp-dev.Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64
+          push: true
+          tags: iowarp/iowarp-dev:latest
       - name: Build and push iowarp
         uses: docker/build-push-action@v6
         with:

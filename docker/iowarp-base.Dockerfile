@@ -89,3 +89,6 @@ RUN npm install -g @anthropic-ai/claude-code
 
 # Switch back to iowarp user
 USER iowarp
+
+# Start SSH on container startup (using sudo since iowarp user has NOPASSWD)
+CMD sudo service ssh start && /bin/bash

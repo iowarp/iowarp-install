@@ -33,12 +33,13 @@ RUN apt-get update && apt-get install -y \
     libssl-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Install MPI (openmpi)
+# Install MPI (openmpi) and serial HDF5
 RUN apt-get update && apt-get install -y \
     openmpi-bin \
     libopenmpi-dev \
-    libhdf5-openmpi-dev \
     mpi-default-dev \
+    libhdf5-dev \
+    hdf5-tools \
     && rm -rf /var/lib/apt/lists/*
 
 # Install pkg-config

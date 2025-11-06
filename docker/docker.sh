@@ -23,6 +23,10 @@ docker build --no-cache -t iowarp-cte -f iowarp-cte.Dockerfile .
 docker tag iowarp-cte iowarp/iowarp-cte:latest
 # docker push iowarp/iowarp-cte:latest
 
+docker build --no-cache -t iowarp-dev -f iowarp-dev.Dockerfile .
+docker tag iowarp-dev iowarp/iowarp-dev:latest
+# docker push iowarp/iowarp-dev:latest
+
 docker build --no-cache -t iowarp -f iowarp.Dockerfile .
 docker tag iowarp iowarp/iowarp:latest
 # docker push iowarp/iowarp:latest
