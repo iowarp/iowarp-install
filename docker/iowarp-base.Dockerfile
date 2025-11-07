@@ -23,7 +23,8 @@ RUN apt install -y \
     coreutils curl \
     lsb-release unzip liblz4-dev \
     bash jq gdbserver gdb gh nano vim dos2unix \
-    clangd clang-format clang-tidy npm
+    clangd clang-format clang-tidy npm \
+    redis-server redis-tools
 
 #------------------------------------------------------------
 # User Configuration
@@ -86,6 +87,13 @@ RUN sed -i 's/#PermitEmptyPasswords no/PermitEmptyPasswords yes/' /etc/ssh/sshd_
 
 # Install Claude Code globally using npm
 RUN npm install -g @anthropic-ai/claude-code
+
+#------------------------------------------------------------
+# uvx Package Manager Installation
+#------------------------------------------------------------
+
+# Install uvx (standalone tool runner for Python)
+RUN pip3 install --break-system-packages uv
 
 # Switch back to iowarp user
 USER iowarp

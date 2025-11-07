@@ -1,0 +1,22 @@
+version: '3.8'
+
+services:
+  iowarp:
+    image: iowarp/iowarp:latest
+    container_name: iowarp-runtime
+    hostname: iowarp-node
+
+    # Mount custom configuration
+    volumes:
+      - ./wrp_conf.yaml:/etc/iowarp/wrp_conf.yaml:ro
+
+    # Expose ZeroMQ port
+    ports:
+      - "5555:5555"
+
+    # Resource limits (optional)
+    # deploy:
+    #   resources:
+    #     limits:
+    #       cpus: '4'
+    #       memory: 8G
