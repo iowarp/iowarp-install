@@ -1,12 +1,9 @@
 #!/bin/bash
-docker build --no-cache -t iowarp-base -f iowarp-base.Dockerfile .
-docker tag iowarp-base iowarp/iowarp-base:latest
+docker build --no-cache -t iowarp/iowarp-base -f iowarp-base.Dockerfile .
 # docker push iowarp/iowarp-base:latest
 
-docker build --no-cache -t iowarp-deps -f iowarp-deps.Dockerfile .
-docker tag iowarp-deps iowarp/iowarp-deps:latest
+docker build --no-cache -t iowarp/iowarp-deps:latest -f iowarp-deps.Dockerfile . 
 # docker push iowarp/iowarp-deps:latest
 
-docker build --no-cache -t iowarp -f iowarp.Dockerfile .
-docker tag iowarp iowarp/iowarp:latest
+docker build --no-cache -t iowarp/iowarp:latest -f iowarp.Dockerfile . 
 # docker push iowarp/iowarp:latest

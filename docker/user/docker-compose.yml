@@ -1,9 +1,7 @@
-version: '3.8'
-
 services:
   iowarp:
     image: iowarp/iowarp:latest
-    container_name: iowarp-runtime
+    container_name: iowarp
     hostname: iowarp-node
 
     # Mount custom configuration
@@ -13,6 +11,13 @@ services:
     # Expose ZeroMQ port
     ports:
       - "5555:5555"
+
+    # Run as daemon with interactive terminal
+    stdin_open: true
+    tty: true
+
+    shm_size: 8g
+    mem_limit: 8g
 
     # Resource limits (optional)
     # deploy:
