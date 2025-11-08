@@ -23,7 +23,6 @@ jobs:
         with:
           context: ./docker
           file: ./docker/iowarp.Dockerfile
-          builder: ${{ steps.buildx.outputs.name }}
-          platforms: linux/amd64
+          platforms: linux/amd64,linux/arm64
           push: true
           tags: iowarp/iowarp:latest
