@@ -13,6 +13,10 @@ RUN mkdir -p /etc/iowarp && \
 # Expose ZeroMQ port
 EXPOSE 5555
 
+# Health check to verify runtime is running
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 \
+  CMD pgrep -f chimaera_start_runtime || exit 1
+
 USER iowarp
 
 # Run chimaera runtime in foreground
