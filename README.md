@@ -52,7 +52,7 @@ storage:
   - path: "ram::cte_ram_tier1"
     bdev_type: "ram"
     capacity_limit: "16GB"
-    score: 0.0  # Tier priority (0.0 = highest)
+    score: 0.0  # Tier priority (0.0 = lowest, only one device)
 
   # Example: Add NVMe tier
   # - path: "/dev/nvme0n1"
