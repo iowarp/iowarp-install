@@ -5,10 +5,10 @@ ENV WRP_RUNTIME_CONF=/etc/iowarp/wrp_conf.yaml
 
 USER root
 
-# Create configuration directory and empty placeholder file
-RUN mkdir -p /etc/iowarp && \
-    touch /etc/iowarp/wrp_conf.yaml && \
-    chown iowarp:iowarp /etc/iowarp/wrp_conf.yaml
+# Create configuration directory and copy default configuration
+RUN mkdir -p /etc/iowarp
+COPY user/wrp_conf.yaml /etc/iowarp/wrp_conf.yaml
+RUN chown iowarp:iowarp /etc/iowarp/wrp_conf.yaml
 
 # Expose ZeroMQ port
 EXPOSE 5555

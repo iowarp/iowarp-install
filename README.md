@@ -20,53 +20,100 @@ Docker provides the easiest way to get started with IOWarp. The `iowarp/iowarp:l
 
 #### Quick Start
 
-1. Pull the IOWarp Docker image:
-```bash
-docker pull iowarp/iowarp:latest
+Create a `docker-compose.yml` file:
+
+```yaml
+# IOWarp Runtime Docker Compose Configuration
+#
+# This compose file runs the IOWarp runtime service for user applications.
+# The iowarp service provides the CTE runtime that applications can connect to.
+#
+# Usage:
+#   docker-compose up                       # Run runtime service
+#   docker-compose down                     # Stop service
+
+services:
+  # IOWarp Runtime Service
+  # Provides the CTE runtime daemon that applications connect to
+  iowarp-runtime:
+    image: iowarp/iowarp:latest
+    container_name: iowarp-runtime
+
+    # Mount shared CTE configuration
+    volumes:
+      - ./wrp_conf.yaml:/etc/iowarp/wrp_conf.yaml:ro
+
+    # Expose ZeroMQ port for client connections
+    ports:
+      - "5555:5555"
+
+    # Resource limits
+    # Large shared memory for CTE operations
+    shm_size: 8g
+    mem_limit: 8g
+
+    # Make IPC namespace shareable so application containers can join
+    ipc: shareable
+
+    # Keep container running as a daemon
+    stdin_open: true
+    tty: true
+
+    # Restart policy - no restart for manual runs
+    restart: "no"
 ```
 
-2. Run the container:
+Run the container:
 ```bash
-docker run -d -p 5555:5555 --name iowarp iowarp/iowarp:latest
-```
-
-#### Using Docker Compose
-
-For more advanced configurations, use Docker Compose with custom CTE (Context Transfer Engine) settings:
-
-```bash
-cd docker/user
 docker-compose up -d
 ```
 
-This mounts a custom `wrp_conf.yaml` configuration file that controls the IOWarp runtime and CTE behavior.
+Shared memory and shareable ipcs are required.
 
-#### Configuration
+#### Configuration (optional)
 
-The CTE configuration is controlled by a YAML file (e.g., `wrp_conf.yaml`). The most important parameter is the **storage configuration**, which defines where and how data is buffered:
+The default configuration provides up to 16GB buffer cache.
+For more complexity, create a `wrp_conf.yaml` configuration file.
+This is an example with some paramters, but not all:
 
 ```yaml
-# Storage block device configuration
-storage:
-  # RAM-based storage tier
-  - path: "ram::cte_ram_tier1"
-    bdev_type: "ram"
-    capacity_limit: "16GB"
-    score: 0.0  # Tier priority (0.0 = lowest, only one device)
+# IOWarp Runtime Configuration File
+compose:
+  # Compose parameters (do not change these)
+  - mod_name: wrp_cte_core
+    pool_name: wrp_cte
+    pool_query: local
+    pool_id: 512.0
 
-  # Example: Add NVMe tier
-  # - path: "/dev/nvme0n1"
-  #   bdev_type: "nvme"
-  #   capacity_limit: "500GB"
-  #   score: 0.5
+    # Storage block device configuration
+    # This is the most important section - defines where data is buffered
+    storage:
+      # RAM-based storage tier (fastest)
+      - path: "ram::cte_ram_tier1"
+        bdev_type: "ram"
+        capacity_limit: "16GB"
+        score: 0.0           # Manual score override (0.0-1.0) - highest tier
+
+      # Example: Add NVMe tier (uncomment to use)
+      # - path: "/dev/nvme0n1"
+      #   bdev_type: "file"
+      #   capacity_limit: "500GB"
+      #   score: 0.5
+
+      # Example: Add SSD tier (uncomment to use)
+      # - path: "/dev/sda1"
+      #   bdev_type: "file"
+      #   capacity_limit: "1TB"
+      #   score: 1.0
 ```
 
-Other parameters primarily affect performance:
-- `targets.neighborhood` - Number of nodes in the cluster
-- `targets.poll_period_ms` - How often to rescan targets for statistics
-- `dpe.dpe_type` - Data placement strategy: `"random"`, `"round_robin"`, or `"max_bw"` (maximum bandwidth)
+**Storage Configuration:**
+- `path` - Device path or RAM identifier (format: `ram::<name>` for RAM, `/dev/<device>` for block devices)
+- `bdev_type` - Backend type: `"ram"` (memory), `"nvme"` (NVMe SSD), `"aio"` (async I/O for other block devices)
+- `capacity_limit` - Maximum storage capacity (supports `KB`, `MB`, `GB`, `TB` suffixes)
+- `score` - Tier priority (0.0 = highest priority, 1.0 = lowest). Lower scores are used first for data placement.
 
-See `demos/benchmark/docker-compose.yml` for a complete benchmark example with detailed configuration documentation.
+Multiple storage tiers can be configured to create a hierarchical storage system. Data is automatically placed across tiers based on the data placement engine (DPE) strategy.
 
 #### Example: Running Benchmarks
 
@@ -80,9 +127,6 @@ docker-compose up
 
 # Run specific test with custom parameters
 TEST_CASE=Get IO_SIZE=4m IO_COUNT=1000 docker-compose up
-
-# Start only the runtime service
-docker-compose up -d iowarp-runtime
 ```
 
 Available benchmark parameters:
