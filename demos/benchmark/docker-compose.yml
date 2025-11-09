@@ -32,19 +32,11 @@ services:
 
     # Mount shared CTE configuration
     volumes:
-      - ./cte_config.yaml:/etc/iowarp/cte_config.yaml:ro
+      - ./cte_config.yaml:/etc/iowarp/wrp_conf.yaml:ro
 
     # Expose ZeroMQ port for client connections
     ports:
       - "5555:5555"
-
-    # Environment variables for runtime configuration
-    environment:
-      # Path to CTE configuration file
-      - WRP_CTE_CONF=/etc/iowarp/cte_config.yaml
-
-      # Enable CTE runtime initialization
-      - CTE_INIT_RUNTIME=1
 
     # Resource limits
     # Large shared memory for CTE operations
