@@ -92,7 +92,7 @@ compose:
       - path: "ram::cte_ram_tier1"
         bdev_type: "ram"
         capacity_limit: "16GB"
-        score: 0.0           # Manual score override (0.0-1.0) - highest tier
+        score: 0.0           # Manual score override (range 0 to 1), put all data here
 
       # Example: Add NVMe tier (uncomment to use)
       # - path: "/dev/nvme0n1"
@@ -111,7 +111,8 @@ compose:
 - `path` - Device path or RAM identifier (format: `ram::<name>` for RAM, `/dev/<device>` for block devices)
 - `bdev_type` - Backend type: `"ram"` (memory), `"nvme"` (NVMe SSD), `"aio"` (async I/O for other block devices)
 - `capacity_limit` - Maximum storage capacity (supports `KB`, `MB`, `GB`, `TB` suffixes)
-- `score` - Tier priority (0.0 = highest priority, 1.0 = lowest). Lower scores are used first for data placement.
+- `score` - Tier priority (0.0 = lowest priority, 1.0 = highest). 0.0 means "anyone can put data here", 
+while 1.0 means only put high priority data here.
 
 Multiple storage tiers can be configured to create a hierarchical storage system. Data is automatically placed across tiers based on the data placement engine (DPE) strategy.
 

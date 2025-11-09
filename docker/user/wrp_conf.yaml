@@ -12,5 +12,5 @@ compose:
       # Primary RAM storage
       - path: "ram::cte_ram_tier1"
         bdev_type: "ram"
-        capacity_limit: "16GB"
+        capacity_limit: "8GB"
         score: 0.0           # Manual score override (0.0-1.0) - highest tier
