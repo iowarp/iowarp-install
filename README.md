@@ -20,50 +20,19 @@ Docker provides the easiest way to get started with IOWarp. The `iowarp/iowarp:l
 
 #### Quick Start
 
-Create a `docker-compose.yml` file:
-
-```yaml
-# IOWarp Runtime Docker Compose Configuration
-#
-# This compose file runs the IOWarp runtime service for user applications.
-# The iowarp service provides the CTE runtime that applications can connect to.
-#
-# Usage:
-#   docker-compose up                       # Run runtime service
-#   docker-compose down                     # Stop service
-
-services:
-  # IOWarp Runtime Service
-  # Provides the CTE runtime daemon that applications connect to
-  iowarp-runtime:
-    image: iowarp/iowarp:latest
-    container_name: iowarp-runtime
-
-    # Mount shared CTE configuration
-    volumes:
-      - ./wrp_conf.yaml:/etc/iowarp/wrp_conf.yaml:ro
-
-    # Expose ZeroMQ port for client connections
-    ports:
-      - "5555:5555"
-
-    # Resource limits
-    # Large shared memory for CTE operations
-    shm_size: 8g
-    mem_limit: 8g
-
-    # Make IPC namespace shareable so application containers can join
-    ipc: shareable
-
-    # Keep container running as a daemon
-    stdin_open: true
-    tty: true
-
-    # Restart policy - no restart for manual runs
-    restart: "no"
+1. Pull the Docker image:
+```bash
+docker pull iowarp/iowarp:latest
 ```
 
-Run the container:
+2. Download the `docker-compose.yml` file:
+```bash
+wget https://raw.githubusercontent.com/iowarp/iowarp-platform/main/docker/user/docker-compose.yml
+```
+
+Alternatively, you can view the file directly: [`docker/user/docker-compose.yml`](docker/user/docker-compose.yml)
+
+3. Run the container:
 ```bash
 docker-compose up -d
 ```
