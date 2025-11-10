@@ -15,7 +15,7 @@ jobs:
           app-id: ${{ secrets.IOWARP_APP_ID }}
           private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
           owner: iowarp
-          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+          repositories: ppi-jarvis-cd
 
       - name: Trigger ppi-jarvis-cd Build Containers
         uses: actions/github-script@v7
@@ -78,7 +78,7 @@ jobs:
           app-id: ${{ secrets.IOWARP_APP_ID }}
           private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
           owner: iowarp
-          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+          repositories: cte-hermes-shm
 
       - name: Trigger cte-hermes-shm Build Containers
         uses: actions/github-script@v7
@@ -141,7 +141,7 @@ jobs:
           app-id: ${{ secrets.IOWARP_APP_ID }}
           private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
           owner: iowarp
-          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+          repositories: iowarp-runtime
 
       - name: Trigger iowarp-runtime Build Containers
         uses: actions/github-script@v7
@@ -204,7 +204,7 @@ jobs:
           app-id: ${{ secrets.IOWARP_APP_ID }}
           private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
           owner: iowarp
-          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+          repositories: content-transfer-engine
 
       - name: Trigger content-transfer-engine Build Containers
         uses: actions/github-script@v7
@@ -267,7 +267,7 @@ jobs:
           app-id: ${{ secrets.IOWARP_APP_ID }}
           private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
           owner: iowarp
-          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+          repositories: context-assimilation-engine
 
       - name: Trigger context-assimilation-engine Build Containers
         uses: actions/github-script@v7
