@@ -276,7 +276,7 @@ jobs:
           script: |
             const response = await github.rest.actions.createWorkflowDispatch({
               owner: 'iowarp',
-              repo: 'context-assimilation-engine',
+              repo: 'content-assimilation-engine',
               workflow_id: 'build-containers.yaml',
               ref: 'main'
             });
@@ -294,7 +294,7 @@ jobs:
             while (Date.now() - startTime < maxWaitTime) {
               const runs = await github.rest.actions.listWorkflowRuns({
                 owner: 'iowarp',
-                repo: 'context-assimilation-engine',
+                repo: 'content-assimilation-engine',
                 workflow_id: 'build-containers.yaml',
                 per_page: 1
               });
