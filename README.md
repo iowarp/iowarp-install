@@ -1,4 +1,4 @@
-# IOWarp Install
+# IOWarp Platform
 
 [![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
 [![IoWarp](https://img.shields.io/badge/IoWarp-GitHub-blue.svg)](http://github.com/iowarp)
@@ -14,7 +14,7 @@ IOWarp Install provides unified installation methods and tools for the IOWarp ec
 
 ## Installation
 
-### Docker (Recommended)
+### 🐳 Docker (Recommended)
 
 Docker provides the easiest way to get started with IOWarp. The `iowarp/iowarp:latest` image includes the complete runtime with buffering services.
 
@@ -70,7 +70,10 @@ docker-compose up -d
 
 Shared memory and shareable ipcs are required.
 
-#### Configuration (optional)
+**More on docker:**
+
+<details>
+<summary><strong>Configuration (optional)</strong></summary>
 
 The default configuration provides up to 16GB buffer cache.
 For more complexity, create a `wrp_conf.yaml` configuration file.
@@ -116,7 +119,10 @@ while 1.0 means only put high priority data here.
 
 Multiple storage tiers can be configured to create a hierarchical storage system. Data is automatically placed across tiers based on the data placement engine (DPE) strategy.
 
-#### Example: Running Benchmarks
+</details>
+
+<details>
+<summary><strong>Example: Running Benchmarks</strong></summary>
 
 The `demos/benchmark/` directory contains a complete Docker Compose setup for running CTE benchmarks:
 
@@ -130,7 +136,7 @@ docker-compose up
 TEST_CASE=Get IO_SIZE=4m IO_COUNT=1000 docker-compose up
 ```
 
-Available benchmark parameters:
+**Available benchmark parameters:**
 - `TEST_CASE` - Benchmark test: `Put`, `Get`, `PutGet` (default: `Put`)
 - `NUM_PROCS` - Number of parallel processes (default: `1`)
 - `DEPTH` - Queue depth for concurrent operations (default: `4`)
@@ -144,7 +150,9 @@ The benchmark compose file demonstrates:
 - Custom CTE configuration via volume mounts
 - Health checks to ensure runtime readiness
 
-### Spack
+</details>
+
+### 📦 Spack
 
 1. Install Spack package manager
 2. Add IOWarp repository:
@@ -160,7 +168,7 @@ spack install iowarp
 
 | Test    | Status |
 | --------| ------ |
-| Windows 2022 | [![win](https://github.com/iowarp/iowarp-install/actions/workflows/win.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/win.yml) |
+| Windows 2022 | [![win](https://github.com/iowarp/iowarp-platform/actions/workflows/win.yml/badge.svg)](https://github.com/iowarp/iowarp-platform/actions/workflows/win.yml) |
 | Ubuntu 24.04 |[![lin](https://github.com/iowarp/iowarp-install/actions/workflows/lin.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/lin.yml) [![conda](https://github.com/iowarp/iowarp-install/actions/workflows/lin-cnd.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/lin-cnd.yml) [![spack](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml) |
 
 ## Project Structure
