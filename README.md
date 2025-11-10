@@ -52,8 +52,8 @@ services:
     shm_size: 8g
     mem_limit: 8g
 
-    # Make IPC namespace shareable so application containers can join
-    ipc: shareable
+    # Make IPC namespace accessible to host so external applications can connect
+    ipc: host
 
     # Keep container running as a daemon
     stdin_open: true
