@@ -215,7 +215,7 @@ jobs:
               owner: 'iowarp',
               repo: 'content-transfer-engine',
               workflow_id: 'build-containers.yaml',
-              ref: '40-ci-cmake-error-no-sources-given-to-target-test_query-testunitcmakeliststxt27'
+              ref: 'main'
             });
             console.log('Triggered content-transfer-engine workflow');
 
@@ -278,7 +278,7 @@ jobs:
               owner: 'iowarp',
               repo: 'content-assimilation-engine',
               workflow_id: 'build-containers.yaml',
-              ref: '34-build-container-fails'
+              ref: 'main'
             });
             console.log('Triggered content-assimilation-engine workflow');
 
