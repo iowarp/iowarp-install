@@ -10,7 +10,7 @@ REPOS=(
   # "ppi-jarvis-cd"
   "cte-hermes-shm"
   "iowarp-runtime"
-#   "content-transfer-engine"
+  "content-transfer-engine"
   "content-assimilation-engine"
   "iowarp-install"
 )

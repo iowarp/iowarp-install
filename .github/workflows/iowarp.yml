@@ -1,10 +1,327 @@
-name: iowarp
+name: Build All Containers (Sequential)
+
 on:
   workflow_dispatch:
-  workflow_call:
+
 jobs:
-  build:
+  # Step 1: Build ppi-jarvis-cd
+  build-ppi-jarvis-cd:
     runs-on: ubuntu-latest
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.IOWARP_APP_ID }}
+          private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
+          owner: iowarp
+          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+
+      - name: Trigger ppi-jarvis-cd Build Containers
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: 'iowarp',
+              repo: 'ppi-jarvis-cd',
+              workflow_id: 'build-containers.yaml',
+              ref: 'main'
+            });
+            console.log('Triggered ppi-jarvis-cd workflow');
+
+      - name: Wait for ppi-jarvis-cd completion
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const pollInterval = 30000; // 30 seconds
+            const maxWaitTime = 3600000; // 60 minutes
+            const startTime = Date.now();
+
+            while (Date.now() - startTime < maxWaitTime) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: 'iowarp',
+                repo: 'ppi-jarvis-cd',
+                workflow_id: 'build-containers.yaml',
+                per_page: 1
+              });
+
+              if (runs.data.workflow_runs.length > 0) {
+                const latestRun = runs.data.workflow_runs[0];
+                console.log(`Status: ${latestRun.status}, Conclusion: ${latestRun.conclusion}`);
+
+                if (latestRun.status === 'completed') {
+                  if (latestRun.conclusion === 'success') {
+                    console.log('ppi-jarvis-cd build completed successfully');
+                    return;
+                  } else {
+                    throw new Error(`ppi-jarvis-cd build failed with conclusion: ${latestRun.conclusion}`);
+                  }
+                }
+              }
+
+              await new Promise(resolve => setTimeout(resolve, pollInterval));
+            }
+
+            throw new Error('ppi-jarvis-cd build timed out');
+
+  # Step 2: Build cte-hermes-shm (depends on ppi-jarvis-cd)
+  build-cte-hermes-shm:
+    runs-on: ubuntu-latest
+    needs: build-ppi-jarvis-cd
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.IOWARP_APP_ID }}
+          private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
+          owner: iowarp
+          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+
+      - name: Trigger cte-hermes-shm Build Containers
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: 'iowarp',
+              repo: 'cte-hermes-shm',
+              workflow_id: 'build-containers.yaml',
+              ref: 'main'
+            });
+            console.log('Triggered cte-hermes-shm workflow');
+
+      - name: Wait for cte-hermes-shm completion
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const pollInterval = 30000;
+            const maxWaitTime = 3600000;
+            const startTime = Date.now();
+
+            while (Date.now() - startTime < maxWaitTime) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: 'iowarp',
+                repo: 'cte-hermes-shm',
+                workflow_id: 'build-containers.yaml',
+                per_page: 1
+              });
+
+              if (runs.data.workflow_runs.length > 0) {
+                const latestRun = runs.data.workflow_runs[0];
+                console.log(`Status: ${latestRun.status}, Conclusion: ${latestRun.conclusion}`);
+
+                if (latestRun.status === 'completed') {
+                  if (latestRun.conclusion === 'success') {
+                    console.log('cte-hermes-shm build completed successfully');
+                    return;
+                  } else {
+                    throw new Error(`cte-hermes-shm build failed with conclusion: ${latestRun.conclusion}`);
+                  }
+                }
+              }
+
+              await new Promise(resolve => setTimeout(resolve, pollInterval));
+            }
+
+            throw new Error('cte-hermes-shm build timed out');
+
+  # Step 3: Build iowarp-runtime (depends on cte-hermes-shm)
+  build-iowarp-runtime:
+    runs-on: ubuntu-latest
+    needs: build-cte-hermes-shm
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.IOWARP_APP_ID }}
+          private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
+          owner: iowarp
+          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+
+      - name: Trigger iowarp-runtime Build Containers
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: 'iowarp',
+              repo: 'iowarp-runtime',
+              workflow_id: 'build-containers.yaml',
+              ref: 'main'
+            });
+            console.log('Triggered iowarp-runtime workflow');
+
+      - name: Wait for iowarp-runtime completion
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const pollInterval = 30000;
+            const maxWaitTime = 3600000;
+            const startTime = Date.now();
+
+            while (Date.now() - startTime < maxWaitTime) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: 'iowarp',
+                repo: 'iowarp-runtime',
+                workflow_id: 'build-containers.yaml',
+                per_page: 1
+              });
+
+              if (runs.data.workflow_runs.length > 0) {
+                const latestRun = runs.data.workflow_runs[0];
+                console.log(`Status: ${latestRun.status}, Conclusion: ${latestRun.conclusion}`);
+
+                if (latestRun.status === 'completed') {
+                  if (latestRun.conclusion === 'success') {
+                    console.log('iowarp-runtime build completed successfully');
+                    return;
+                  } else {
+                    throw new Error(`iowarp-runtime build failed with conclusion: ${latestRun.conclusion}`);
+                  }
+                }
+              }
+
+              await new Promise(resolve => setTimeout(resolve, pollInterval));
+            }
+
+            throw new Error('iowarp-runtime build timed out');
+
+  # Step 4: Build content-transfer-engine (depends on iowarp-runtime)
+  build-content-transfer-engine:
+    runs-on: ubuntu-latest
+    needs: build-iowarp-runtime
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.IOWARP_APP_ID }}
+          private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
+          owner: iowarp
+          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+
+      - name: Trigger content-transfer-engine Build Containers
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: 'iowarp',
+              repo: 'content-transfer-engine',
+              workflow_id: 'build-containers.yaml',
+              ref: 'main'
+            });
+            console.log('Triggered content-transfer-engine workflow');
+
+      - name: Wait for content-transfer-engine completion
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const pollInterval = 30000;
+            const maxWaitTime = 3600000;
+            const startTime = Date.now();
+
+            while (Date.now() - startTime < maxWaitTime) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: 'iowarp',
+                repo: 'content-transfer-engine',
+                workflow_id: 'build-containers.yaml',
+                per_page: 1
+              });
+
+              if (runs.data.workflow_runs.length > 0) {
+                const latestRun = runs.data.workflow_runs[0];
+                console.log(`Status: ${latestRun.status}, Conclusion: ${latestRun.conclusion}`);
+
+                if (latestRun.status === 'completed') {
+                  if (latestRun.conclusion === 'success') {
+                    console.log('content-transfer-engine build completed successfully');
+                    return;
+                  } else {
+                    throw new Error(`content-transfer-engine build failed with conclusion: ${latestRun.conclusion}`);
+                  }
+                }
+              }
+
+              await new Promise(resolve => setTimeout(resolve, pollInterval));
+            }
+
+            throw new Error('content-transfer-engine build timed out');
+
+  # Step 5: Build context-assimilation-engine (depends on content-transfer-engine)
+  build-context-assimilation-engine:
+    runs-on: ubuntu-latest
+    needs: build-content-transfer-engine
+    steps:
+      - name: Generate GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.IOWARP_APP_ID }}
+          private-key: ${{ secrets.IOWARP_APP_PRIVATE_KEY }}
+          owner: iowarp
+          repositories: ppi-jarvis-cd,cte-hermes-shm,iowarp-runtime,content-transfer-engine,context-assimilation-engine,iowarp-install
+
+      - name: Trigger context-assimilation-engine Build Containers
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const response = await github.rest.actions.createWorkflowDispatch({
+              owner: 'iowarp',
+              repo: 'context-assimilation-engine',
+              workflow_id: 'build-containers.yaml',
+              ref: 'main'
+            });
+            console.log('Triggered context-assimilation-engine workflow');
+
+      - name: Wait for context-assimilation-engine completion
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const pollInterval = 30000;
+            const maxWaitTime = 3600000;
+            const startTime = Date.now();
+
+            while (Date.now() - startTime < maxWaitTime) {
+              const runs = await github.rest.actions.listWorkflowRuns({
+                owner: 'iowarp',
+                repo: 'context-assimilation-engine',
+                workflow_id: 'build-containers.yaml',
+                per_page: 1
+              });
+
+              if (runs.data.workflow_runs.length > 0) {
+                const latestRun = runs.data.workflow_runs[0];
+                console.log(`Status: ${latestRun.status}, Conclusion: ${latestRun.conclusion}`);
+
+                if (latestRun.status === 'completed') {
+                  if (latestRun.conclusion === 'success') {
+                    console.log('context-assimilation-engine build completed successfully');
+                    return;
+                  } else {
+                    throw new Error(`context-assimilation-engine build failed with conclusion: ${latestRun.conclusion}`);
+                  }
+                }
+              }
+
+              await new Promise(resolve => setTimeout(resolve, pollInterval));
+            }
+
+            throw new Error('context-assimilation-engine build timed out');
+
+  # Step 6: Build iowarp-build and iowarp (depends on context-assimilation-engine)
+  build-iowarp:
+    runs-on: ubuntu-latest
+    needs: build-context-assimilation-engine
     timeout-minutes: 360
     steps:
       - name: Checkout
@@ -19,6 +336,15 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
         id: buildx
+      - name: Build and push iowarp-build
+        uses: docker/build-push-action@v6
+        with:
+          context: ./docker
+          file: ./docker/iowarp-build.Dockerfile
+          builder: ${{ steps.buildx.outputs.name }}
+          platforms: linux/amd64,linux/arm64
+          push: true
+          tags: iowarp/iowarp-build:latest
       - name: Build and push iowarp
         uses: docker/build-push-action@v6
         with:

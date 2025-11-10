@@ -1,4 +1,4 @@
-FROM iowarp/context-transfer-engine:latest
+FROM iowarp/iowarp-build:latest
 
 # Set environment variables for configuration paths
 ENV WRP_RUNTIME_CONF=/etc/iowarp/wrp_conf.yaml
