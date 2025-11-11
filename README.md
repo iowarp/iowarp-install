@@ -28,7 +28,7 @@ This repository provides unified installation methods and tools for the entire I
 
 - **Context Engineering**: 15 specialized MCP servers for scientific computing workflows, ClaudIO agent framework, and intelligent context orchestration
 - **High Performance**: Demonstrated 7.5x speedup in real-world workflows with HPC integration and efficient resource management
-- **Open Source**: MIT licensed, $5M NSF funded, with active community support
+- **Open Source**: BSD 3-Clause licensed, $5M NSF funded, with active community support
 - **Three-Tier Architecture**: Intelligence Layer (AI agents), Tool Layer (data processing), and Storage Layer (hierarchical storage management)
 
 ## Installation
