@@ -22,7 +22,7 @@
 
 **IOWarp** is a context management platform designed to accelerate scientific workflows by solving data bottlenecks using AI. It enables AI agents to orchestrate large-scale data, complex multi-step workflows, and autonomous agentic orchestration in high-performance computing environments.
 
-This repository provides unified installation methods and tools for the entire IOWarp ecosystem. It simplifies the deployment of IOWarp's platform components - including the Content Assimilation Engine (CAE), Content Transfer Engine (CTE), Runtime, Agent Toolkit, and MCP servers—across multiple platforms and package managers.
+This repository provides unified installation methods and tools for the entire IOWarp ecosystem. It simplifies the deployment of IOWarp's platform components - including the Content Assimilation Engine (CAE), Content Transfer Engine (CTE), Runtime, Agent Toolkit, and MCP servers — across multiple platforms and package managers.
 
 ### Key Capabilities
 
