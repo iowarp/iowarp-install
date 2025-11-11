@@ -151,7 +151,7 @@ spack install iowarp
 
 ## Contributing
 
-Contributions are welcome. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Contributions are welcome. Please see [CONTRIBUTING](CONTRIBUTING.md) for guidelines.
 
 ## License
 
