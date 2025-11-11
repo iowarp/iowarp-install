@@ -139,8 +139,7 @@ The benchmark compose file demonstrates:
 
 ### 📦 Spack
 
-1. Install Spack package manager
-   [Installation guide](https://spack-tutorial.readthedocs.io/en/latest/tutorial_basics.html)
+1. Install Spack package manager - [Installation guide](https://spack-tutorial.readthedocs.io/en/latest/tutorial_basics.html)
 2. Add IOWarp repository:
 ```bash
 spack repo add iowarp-spack
