@@ -152,6 +152,8 @@ spack install iowarp
 ## Resources
 
 - **Website**: [iowarp.ai](https://www.iowarp.ai)
+- **Platform Documentation**: [iowarp.ai/platform](https://www.iowarp.ai/platform)
+- **Docs**: [iowarp.ai/docs/intro](https://www.iowarp.ai/docs/intro)
 - **Contributing**: See [CONTRIBUTING](CONTRIBUTING.md) for guidelines
 - **License**: [BSD 3-Clause License](LICENSE)
 - **Support**: [GitHub Issues](https://github.com/iowarp/iowarp) | [Project Homepage](https://grc.iit.edu/research/projects/iowarp/)
