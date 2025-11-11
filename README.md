@@ -18,7 +18,7 @@
   <a href="https://www.docker.com/"><img alt="Docker" src="https://img.shields.io/badge/Docker-Compatible-blue.svg" /></a>
 </p>
 
-## Purpose
+## Overview
 
 IOWarp Install provides unified installation methods and tools for the IOWarp ecosystem across multiple platforms and package managers. It simplifies the deployment of IOWarp's high-performance I/O runtime and related components through various installation channels including Conda, Docker, Snap, Spack, and vcpkg.
 
@@ -27,8 +27,6 @@ IOWarp Install provides unified installation methods and tools for the IOWarp ec
 ### 🐳 Docker (Recommended)
 
 Docker provides the easiest way to get started with IOWarp. The `iowarp/iowarp:latest` image includes the complete runtime with buffering services.
-
-#### Quick Start
 
 1. Pull the Docker image:
 ```bash
@@ -45,7 +43,7 @@ wget https://raw.githubusercontent.com/iowarp/iowarp-platform/main/docker/user/d
 docker-compose up -d
 ```
 
-Shared memory and shareable ipcs are required.
+> **Note:** The provided `docker-compose.yml` file already configures the required shared memory (`shm_size: 8g`) and shareable IPC namespace (`ipc: shareable`) settings. These are required for IOWarp to function properly.
 
 **More on docker:**
 
