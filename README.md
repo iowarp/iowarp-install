@@ -1,12 +1,14 @@
-# IOWarp Platform
+<h1 align="center">IOWarp Platform</h1>
 
-[![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![IoWarp](https://img.shields.io/badge/IoWarp-GitHub-blue.svg)](http://github.com/iowarp)
-[![GRC](https://img.shields.io/badge/GRC-Website-blue.svg)](https://grc.iit.edu/)
-[![Python](https://img.shields.io/badge/Python-3.7+-yellow.svg)](https://www.python.org/)
-[![Docker](https://img.shields.io/badge/Docker-Compatible-blue.svg)](https://www.docker.com/)
+<p align="center">
+  <a href="https://opensource.org/licenses/BSD-3-Clause"><img alt="License: BSD-3-Clause" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" /></a>
+  <a href="http://github.com/iowarp"><img alt="IoWarp" src="https://img.shields.io/badge/IoWarp-GitHub-blue.svg" /></a>
+  <a href="https://grc.iit.edu/"><img alt="GRC" src="https://img.shields.io/badge/GRC-Website-blue.svg" /></a>
+  <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/Python-3.7+-yellow.svg" /></a>
+  <a href="https://www.docker.com/"><img alt="Docker" src="https://img.shields.io/badge/Docker-Compatible-blue.svg" /></a>
+</p>
 
-Make IOWarp Installation Easy
+<p align="center">Make IOWarp Installation Easy</p>
 
 ## Purpose
 
@@ -25,12 +27,10 @@ Docker provides the easiest way to get started with IOWarp. The `iowarp/iowarp:l
 docker pull iowarp/iowarp:latest
 ```
 
-2. Download the `docker-compose.yml` file:
+2. Download the `docker/user/docker-compose.yml` file. Check file [here](docker/user/docker-compose.yml):
 ```bash
 wget https://raw.githubusercontent.com/iowarp/iowarp-platform/main/docker/user/docker-compose.yml
 ```
-
-Alternatively, you can view the file directly: [`docker/user/docker-compose.yml`](docker/user/docker-compose.yml)
 
 3. Run the container:
 ```bash
