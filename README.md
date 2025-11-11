@@ -20,7 +20,16 @@
 
 ## Overview
 
-IOWarp Install provides unified installation methods and tools for the IOWarp ecosystem across multiple platforms and package managers. It simplifies the deployment of IOWarp's high-performance I/O runtime and related components through various installation channels including Conda, Docker, Snap, Spack, and vcpkg.
+**IOWarp** is a context management platform designed to accelerate scientific workflows by solving data bottlenecks using AI. It enables AI agents to orchestrate large-scale data, complex multi-step workflows, and autonomous agentic orchestration in high-performance computing environments.
+
+This repository provides unified installation methods and tools for the entire IOWarp ecosystem. It simplifies the deployment of IOWarp's platform components - including the Content Assimilation Engine (CAE), Content Transfer Engine (CTE), Runtime, Agent Toolkit, and MCP servers—across multiple platforms and package managers.
+
+### Key Capabilities
+
+- **Context Engineering**: 15 specialized MCP servers for scientific computing workflows, ClaudIO agent framework, and intelligent context orchestration
+- **High Performance**: Demonstrated 7.5x speedup in real-world workflows with HPC integration and efficient resource management
+- **Open Source**: MIT licensed, $5M NSF funded, with active community support
+- **Three-Tier Architecture**: Intelligence Layer (AI agents), Tool Layer (data processing), and Storage Layer (hierarchical storage management)
 
 ## Installation
 
