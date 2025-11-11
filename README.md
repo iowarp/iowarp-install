@@ -43,7 +43,8 @@ wget https://raw.githubusercontent.com/iowarp/iowarp/main/docker/user/docker-com
 docker-compose up -d
 ```
 
-> **Note:** The provided `docker-compose.yml` file already configures the required shared memory (`shm_size: 8g`) and shareable IPC namespace (`ipc: shareable`) settings. These are required for IOWarp to function properly.
+> [!NOTE] 
+> The provided `docker-compose.yml` file already configures the required shared memory (`shm_size: 8g`) and shareable IPC namespace (`ipc: shareable`) settings. These are required for IOWarp to function properly.
 
 **More on docker:**
 
@@ -138,12 +139,6 @@ spack repo add iowarp-spack
 ```bash
 spack install iowarp
 ```
-
-## Project Structure
-
-- `docker/` - Docker images and configurations
-- `demos/` - Example applications and demos
-- `iowarp-spack/` - Spack package definitions
 
 ## License
 
