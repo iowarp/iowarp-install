@@ -141,10 +141,12 @@ spack install iowarp
 
 ## Continuous Integration
 
-| Test    | Status |
-| --------| ------ |
-| Windows 2022 | [![win](https://github.com/iowarp/iowarp-platform/actions/workflows/win.yml/badge.svg)](https://github.com/iowarp/iowarp-platform/actions/workflows/win.yml) |
-| Ubuntu 24.04 |[![lin](https://github.com/iowarp/iowarp-install/actions/workflows/lin.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/lin.yml) [![conda](https://github.com/iowarp/iowarp-install/actions/workflows/lin-cnd.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/lin-cnd.yml) [![spack](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml) |
+| Platform | Test | Status |
+|----------|------|--------|
+| Windows 2022 | Build | [![win](https://github.com/iowarp/iowarp/actions/workflows/win.yml/badge.svg)](https://github.com/iowarp/iowarp/actions/workflows/win.yml) |
+| Ubuntu 24.04 | Build | [![lin](https://github.com/iowarp/iowarp/actions/workflows/lin.yml/badge.svg)](https://github.com/iowarp/iowarp/actions/workflows/lin.yml) |
+| Ubuntu 24.04 | Conda | [![conda](https://github.com/iowarp/iowarp/actions/workflows/lin-cnd.yml/badge.svg)](https://github.com/iowarp/iowarp/actions/workflows/lin-cnd.yml) |
+| Ubuntu 24.04 | Spack | [![spack](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml) |
 
 ## Project Structure
 
