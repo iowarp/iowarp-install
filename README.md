@@ -1,3 +1,9 @@
+<p align="center">
+  <a href="https://www.iowarp.ai">
+    <img src="https://www.iowarp.ai/img/iowarp_logo.png" alt="IOWarp logo" width="50%">
+  </a>
+</p>
+
 <h1 align="center">IOWarp Platform</h1>
 
 <p align="center">
