@@ -4,7 +4,11 @@
   </a>
 </p>
 
-<h1 align="center">IOWarp Platform</h1>
+<h1 align="center">IOWarp</h1>
+
+<p align="center"><strong>Context Management Platform</strong></p>
+
+<p align="center">Enabling AI agents to orchestrate large-scale data, complex multi-step workflows, and autonomous agentic orchestration.</p>
 
 <p align="center">
   <a href="https://opensource.org/licenses/BSD-3-Clause"><img alt="License: BSD-3-Clause" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" /></a>
@@ -13,8 +17,6 @@
   <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/Python-3.7+-yellow.svg" /></a>
   <a href="https://www.docker.com/"><img alt="Docker" src="https://img.shields.io/badge/Docker-Compatible-blue.svg" /></a>
 </p>
-
-<p align="center">Make IOWarp Installation Easy</p>
 
 ## Purpose
 
