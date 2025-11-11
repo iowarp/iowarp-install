@@ -149,9 +149,13 @@ spack repo add iowarp-spack
 spack install iowarp
 ```
 
+## Contributing
+
+Contributions are welcome. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+
 ## License
 
-IOWarp Install is licensed under the BSD 3-Clause License. You can find the full license text in the source files.
+Licensed under the BSD 3-Clause License. See [LICENSE](LICENSE) for details.
 
 ## Support
 
