@@ -149,17 +149,9 @@ spack repo add iowarp-spack
 spack install iowarp
 ```
 
-## Contributing
+## Resources
 
-Contributions are welcome. Please see [CONTRIBUTING](CONTRIBUTING.md) for guidelines.
-
-## License
-
-Licensed under the BSD 3-Clause License. See [LICENSE](LICENSE) for details.
-
-## Support
-
-For issues, questions, or installation support:
-- Open an issue on the [GitHub repository](https://github.com/iowarp/iowarp)
-- Visit the [IOWarp project homepage](https://grc.iit.edu/research/projects/iowarp/)
-- Contact the Gnosis Research Center at Illinois Institute of Technology
+- **Website**: [iowarp.ai](https://www.iowarp.ai)
+- **Contributing**: See [CONTRIBUTING](CONTRIBUTING.md) for guidelines
+- **License**: [BSD 3-Clause License](LICENSE)
+- **Support**: [GitHub Issues](https://github.com/iowarp/iowarp) | [Project Homepage](https://grc.iit.edu/research/projects/iowarp/)
