@@ -150,7 +150,7 @@ spack install iowarp
 ```
 
 ## Resources
-
+- **Gnosis Research Center**: [grc.iit.edu](https://grc.iit.edu/)
 - **Website**: [iowarp.ai](https://www.iowarp.ai)
 - **Platform Documentation**: [iowarp.ai/platform](https://www.iowarp.ai/platform)
 - **Docs**: [iowarp.ai/docs/intro](https://www.iowarp.ai/docs/intro)
