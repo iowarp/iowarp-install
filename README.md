@@ -35,7 +35,7 @@ docker pull iowarp/iowarp:latest
 
 2. Download the `docker/user/docker-compose.yml` file. Check file [here](docker/user/docker-compose.yml):
 ```bash
-wget https://raw.githubusercontent.com/iowarp/iowarp-platform/main/docker/user/docker-compose.yml
+wget https://raw.githubusercontent.com/iowarp/iowarp/main/docker/user/docker-compose.yml
 ```
 
 3. Run the container:
@@ -139,15 +139,6 @@ spack repo add iowarp-spack
 spack install iowarp
 ```
 
-## Continuous Integration
-
-| Platform | Test | Status |
-|----------|------|--------|
-| Windows 2022 | Build | [![win](https://github.com/iowarp/iowarp/actions/workflows/win.yml/badge.svg)](https://github.com/iowarp/iowarp/actions/workflows/win.yml) |
-| Ubuntu 24.04 | Build | [![lin](https://github.com/iowarp/iowarp/actions/workflows/lin.yml/badge.svg)](https://github.com/iowarp/iowarp/actions/workflows/lin.yml) |
-| Ubuntu 24.04 | Conda | [![conda](https://github.com/iowarp/iowarp/actions/workflows/lin-cnd.yml/badge.svg)](https://github.com/iowarp/iowarp/actions/workflows/lin-cnd.yml) |
-| Ubuntu 24.04 | Spack | [![spack](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml) |
-
 ## Project Structure
 
 - `docker/` - Docker images and configurations
@@ -161,6 +152,6 @@ IOWarp Install is licensed under the BSD 3-Clause License. You can find the full
 ## Support
 
 For issues, questions, or installation support:
-- Open an issue on the [GitHub repository](https://github.com/iowarp/iowarp-install)
+- Open an issue on the [GitHub repository](https://github.com/iowarp/iowarp)
 - Visit the [IOWarp project homepage](https://grc.iit.edu/research/projects/iowarp/)
 - Contact the Gnosis Research Center at Illinois Institute of Technology
