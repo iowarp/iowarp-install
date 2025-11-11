@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://www.iowarp.ai">
-    <img src="https://www.iowarp.ai/img/iowarp_logo.png" alt="IOWarp logo" width="50%">
+    <img src="https://www.iowarp.ai/img/iowarp_logo.png" alt="IOWarp logo" width="20%">
   </a>
 </p>
 
