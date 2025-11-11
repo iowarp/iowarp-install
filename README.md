@@ -1,76 +1,64 @@
-# IOWarp Install
+<p align="center">
+  <a href="https://www.iowarp.ai">
+    <img src="https://www.iowarp.ai/img/iowarp_logo.png" alt="IOWarp logo" width="25%">
+  </a>
+</p>
 
-[![License: BSD-3-Clause](https://img.shields.io/badge/License-BSD%203--Clause-blue.svg)](https://opensource.org/licenses/BSD-3-Clause)
-[![IoWarp](https://img.shields.io/badge/IoWarp-GitHub-blue.svg)](http://github.com/iowarp)
-[![GRC](https://img.shields.io/badge/GRC-Website-blue.svg)](https://grc.iit.edu/)
-[![Python](https://img.shields.io/badge/Python-3.7+-yellow.svg)](https://www.python.org/)
-[![Docker](https://img.shields.io/badge/Docker-Compatible-blue.svg)](https://www.docker.com/)
+<h1 align="center">IOWarp</h1>
 
-Make IOWarp Installation Easy
+<p align="center"><strong>Context Management Platform</strong></p>
 
-## Purpose
+<p align="center">Enabling AI agents to orchestrate large-scale data, complex multi-step workflows, and autonomous agentic orchestration.</p>
 
-IOWarp Install provides unified installation methods and tools for the IOWarp ecosystem across multiple platforms and package managers. It simplifies the deployment of IOWarp's high-performance I/O runtime and related components through various installation channels including Conda, Docker, Snap, Spack, and vcpkg.
+<p align="center">
+  <a href="https://opensource.org/licenses/BSD-3-Clause"><img alt="License: BSD-3-Clause" src="https://img.shields.io/badge/License-BSD%203--Clause-blue.svg" /></a>
+  <a href="http://github.com/iowarp"><img alt="IoWarp" src="https://img.shields.io/badge/IoWarp-GitHub-blue.svg" /></a>
+  <a href="https://grc.iit.edu/"><img alt="GRC" src="https://img.shields.io/badge/GRC-Website-blue.svg" /></a>
+  <a href="https://www.python.org/"><img alt="Python" src="https://img.shields.io/badge/Python-3.7+-yellow.svg" /></a>
+  <a href="https://www.docker.com/"><img alt="Docker" src="https://img.shields.io/badge/Docker-Compatible-blue.svg" /></a>
+</p>
+
+## Overview
+
+**IOWarp** is a context management platform designed to accelerate scientific workflows by solving data bottlenecks using AI. It enables AI agents to orchestrate large-scale data, complex multi-step workflows, and autonomous agentic orchestration in high-performance computing environments.
+
+This repository provides unified installation methods and tools for the entire IOWarp ecosystem. It simplifies the deployment of IOWarp's platform components - including the Content Assimilation Engine (CAE), Content Transfer Engine (CTE), Runtime, Agent Toolkit, and MCP servers - across multiple platforms and package managers.
+
+### Key Capabilities
+
+- **Context Engineering**: 15 specialized MCP servers for scientific computing workflows, ClaudIO agent framework, and intelligent context orchestration
+- **High Performance**: Demonstrated 7.5x speedup in real-world workflows with HPC integration and efficient resource management
+- **Open Source**: BSD 3-Clause licensed, $5M NSF funded, with active community support
+- **Three-Tier Architecture**: Intelligence Layer (AI agents), Tool Layer (data processing), and Storage Layer (hierarchical storage management)
 
 ## Installation
 
-### Docker (Recommended)
+### 🐳 Docker (Recommended)
 
 Docker provides the easiest way to get started with IOWarp. The `iowarp/iowarp:latest` image includes the complete runtime with buffering services.
 
-#### Quick Start
-
-Create a `docker-compose.yml` file:
-
-```yaml
-# IOWarp Runtime Docker Compose Configuration
-#
-# This compose file runs the IOWarp runtime service for user applications.
-# The iowarp service provides the CTE runtime that applications can connect to.
-#
-# Usage:
-#   docker-compose up                       # Run runtime service
-#   docker-compose down                     # Stop service
-
-services:
-  # IOWarp Runtime Service
-  # Provides the CTE runtime daemon that applications connect to
-  iowarp-runtime:
-    image: iowarp/iowarp:latest
-    container_name: iowarp-runtime
-
-    # Mount shared CTE configuration
-    volumes:
-      - ./wrp_conf.yaml:/etc/iowarp/wrp_conf.yaml:ro
-
-    # Expose ZeroMQ port for client connections
-    ports:
-      - "5555:5555"
-
-    # Resource limits
-    # Large shared memory for CTE operations
-    shm_size: 8g
-    mem_limit: 8g
-
-    # Make IPC namespace accessible to host so external applications can connect
-    ipc: host
-
-    # Keep container running as a daemon
-    stdin_open: true
-    tty: true
-
-    # Restart policy - no restart for manual runs
-    restart: "no"
+1. Pull the Docker image:
+```bash
+docker pull iowarp/iowarp:latest
 ```
 
-Run the container:
+2. Download the `docker/user/docker-compose.yml` file. Check file [here](docker/user/docker-compose.yml):
+```bash
+wget https://raw.githubusercontent.com/iowarp/iowarp/main/docker/user/docker-compose.yml
+```
+
+3. Run the container:
 ```bash
 docker-compose up -d
 ```
 
-Shared memory and shareable ipcs are required.
+> [!NOTE] 
+> The provided `docker-compose.yml` file already configures the required shared memory (`shm_size: 8g`) and shareable IPC namespace (`ipc: shareable`) settings. These are required for IOWarp to function properly.
 
-#### Configuration (optional)
+**More on docker:**
+
+<details>
+<summary><strong>Configuration (optional)</strong></summary>
 
 The default configuration provides up to 16GB buffer cache.
 For more complexity, create a `wrp_conf.yaml` configuration file.
@@ -116,7 +104,10 @@ while 1.0 means only put high priority data here.
 
 Multiple storage tiers can be configured to create a hierarchical storage system. Data is automatically placed across tiers based on the data placement engine (DPE) strategy.
 
-#### Example: Running Benchmarks
+</details>
+
+<details>
+<summary><strong>Example: Running Benchmarks</strong></summary>
 
 The `demos/benchmark/` directory contains a complete Docker Compose setup for running CTE benchmarks:
 
@@ -130,7 +121,7 @@ docker-compose up
 TEST_CASE=Get IO_SIZE=4m IO_COUNT=1000 docker-compose up
 ```
 
-Available benchmark parameters:
+**Available benchmark parameters:**
 - `TEST_CASE` - Benchmark test: `Put`, `Get`, `PutGet` (default: `Put`)
 - `NUM_PROCS` - Number of parallel processes (default: `1`)
 - `DEPTH` - Queue depth for concurrent operations (default: `4`)
@@ -144,9 +135,11 @@ The benchmark compose file demonstrates:
 - Custom CTE configuration via volume mounts
 - Health checks to ensure runtime readiness
 
-### Spack
+</details>
 
-1. Install Spack package manager
+### 📦 Spack
+
+1. Install Spack package manager - [Installation guide](https://spack-tutorial.readthedocs.io/en/latest/tutorial_basics.html)
 2. Add IOWarp repository:
 ```bash
 spack repo add iowarp-spack
@@ -156,26 +149,11 @@ spack repo add iowarp-spack
 spack install iowarp
 ```
 
-## Continuous Integration
-
-| Test    | Status |
-| --------| ------ |
-| Windows 2022 | [![win](https://github.com/iowarp/iowarp-install/actions/workflows/win.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/win.yml) |
-| Ubuntu 24.04 |[![lin](https://github.com/iowarp/iowarp-install/actions/workflows/lin.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/lin.yml) [![conda](https://github.com/iowarp/iowarp-install/actions/workflows/lin-cnd.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/lin-cnd.yml) [![spack](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml/badge.svg)](https://github.com/iowarp/iowarp-install/actions/workflows/spack.yml) |
-
-## Project Structure
-
-- `docker/` - Docker images and configurations
-- `demos/` - Example applications and demos
-- `iowarp-spack/` - Spack package definitions
-
-## License
-
-IOWarp Install is licensed under the BSD 3-Clause License. You can find the full license text in the source files.
-
-## Support
-
-For issues, questions, or installation support:
-- Open an issue on the [GitHub repository](https://github.com/iowarp/iowarp-install)
-- Visit the [IOWarp project homepage](https://grc.iit.edu/research/projects/iowarp/)
-- Contact the Gnosis Research Center at Illinois Institute of Technology
+## Resources
+- **Gnosis Research Center**: [grc.iit.edu](https://grc.iit.edu/)
+- **Website**: [iowarp.ai](https://www.iowarp.ai)
+- **Platform Documentation**: [iowarp.ai/platform](https://www.iowarp.ai/platform)
+- **Docs**: [iowarp.ai/docs/intro](https://www.iowarp.ai/docs/intro)
+- **Contributing**: See [CONTRIBUTING](CONTRIBUTING.md) for guidelines
+- **License**: [BSD 3-Clause License](LICENSE)
+- **Support**: [GitHub Issues](https://github.com/iowarp/iowarp) | [Project Homepage](https://grc.iit.edu/research/projects/iowarp/)
