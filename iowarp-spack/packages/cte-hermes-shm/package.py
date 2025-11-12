@@ -1,6 +1,11 @@
 from spack.package import *
 
 class CteHermesShm(CMakePackage):
+    """DEPRECATED: This package has been merged into iowarp-core.
+    Please use 'iowarp-core' or 'iowarp' instead.
+    The cte-hermes-shm repository is now part of the unified core repository
+    at https://github.com/iowarp/core as 'context-transport-primitives'."""
+    
     homepage = "https://github.com/lukemartinlogan/cte-hermes-shm/wiki"
     git = "https://github.com/iowarp/cte-hermes-shm.git"
     

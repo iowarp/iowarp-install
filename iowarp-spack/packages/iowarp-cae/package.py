@@ -2,6 +2,11 @@ from spack.package import *
 
 
 class IowarpCae(CMakePackage):
+    """DEPRECATED: This package has been merged into iowarp-core.
+    Please use 'iowarp-core' or 'iowarp' instead.
+    The context-assimilation-engine is now part of the unified core repository
+    at https://github.com/iowarp/core."""
+    
     homepage = "https://grc.iit.edu/docs/hermes/main-scenario"
     git = "https://github.com/iowarp/content-assimilation-engine.git"
 

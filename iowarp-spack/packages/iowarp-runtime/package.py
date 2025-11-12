@@ -1,6 +1,11 @@
 from spack.package import *
 
 class IowarpRuntime(CMakePackage):
+    """DEPRECATED: This package has been merged into iowarp-core.
+    Please use 'iowarp-core' or 'iowarp' instead.
+    The runtime (Chimaera) is now part of the unified core repository
+    at https://github.com/iowarp/core."""
+    
     homepage = "http://www.cs.iit.edu/~scs/assets/projects/Hermes/Hermes.html"
     git = "https://github.com/iowarp/iowarp-runtime.git"
 
