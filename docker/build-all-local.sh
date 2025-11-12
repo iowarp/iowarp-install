@@ -8,10 +8,7 @@ set -e  # Exit on error
 # List of repositories to build
 REPOS=(
   # "ppi-jarvis-cd"
-  "cte-hermes-shm"
-  "iowarp-runtime"
-  "content-transfer-engine"
-  "content-assimilation-engine"
+  "core"
   "iowarp-install"
 )
 
