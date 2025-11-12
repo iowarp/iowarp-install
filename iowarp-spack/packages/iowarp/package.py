@@ -27,6 +27,7 @@ class Iowarp(Package):
     variant("zmq", default=True, description="Build ZeroMQ support")
     variant("cuda", default=False, description="Enable CUDA support for iowarp")
     variant("rocm", default=False, description="Enable ROCm support for iowarp")
+    variant("adios2", default=True, description="Build with ADIOS2 support")
 
     # Component variants
     variant("runtime", default=True, description="Enable Chimaera runtime component")
@@ -54,9 +55,8 @@ class Iowarp(Package):
     depends_on('iowarp-core+zmq', when='+zmq')
     depends_on('iowarp-core+cuda', when='+cuda')
     depends_on('iowarp-core+rocm', when='+rocm')
+    depends_on('iowarp-core+adios2', when='+adios2')
     depends_on('iowarp-core+runtime', when='+runtime')
     depends_on('iowarp-core+cte', when='+cte')
     depends_on('iowarp-core+cae', when='+cae')
     depends_on('iowarp-core+cee', when='+cee')
-
-    depends_on('py-ppi-jarvis-cd', type=('build', 'run'))

@@ -42,21 +42,52 @@ class IowarpCore(CMakePackage):
     variant('zmq', default=True, description='Build ZeroMQ support')
     variant('cuda', default=False, description='Enable CUDA support')
     variant('rocm', default=False, description='Enable ROCm support')
+    variant('adios2', default=True, description='Build with ADIOS2 support')
 
-    # Base dependencies (always required)
-    depends_on('iowarp-base')
-    depends_on('iowarp-base+vfd', when='+vfd')
-    depends_on('iowarp-base+compress', when='+compress')
-    depends_on('iowarp-base+encrypt', when='+encrypt')
-    depends_on('iowarp-base+cuda', when='+cuda')
-    depends_on('iowarp-base+rocm', when='+rocm')
-    depends_on('iowarp-base+mochi', when='+mochi')
-    depends_on('iowarp-base+ares', when='+ares')
-    depends_on('iowarp-base+elf', when='+elf')
-    depends_on('iowarp-base+mpi', when='+mpiio')
+    # Core dependencies (always required)
+    depends_on('cmake@3.25:')
+    depends_on('catch2@3.0.1')
+    depends_on('yaml-cpp')
+    depends_on('doxygen')
+    depends_on('cereal')
+    depends_on('boost@1.7: +context +fiber +coroutine +regex +system +filesystem +serialization +pic +math')
+    depends_on('libzmq', when='+zmq')
     
-    # Build tool dependencies
-    depends_on('py-ppi-jarvis-cd', type=('build'))
+    # Python dependencies
+    depends_on('python')
+    depends_on('py-pip')
+    depends_on('py-setuptools')
+    depends_on('py-pandas')
+    depends_on('py-pyyaml')
+
+    # Conditional core dependencies
+    depends_on('libelf', when='+elf')
+    depends_on('mpi', when='+mpiio')
+    depends_on('hdf5', when='+vfd')
+    depends_on('adios2', when='+adios2')
+
+    # Networking libraries
+    depends_on('libfabric fabrics=sockets,tcp,udp,verbs,mlx,rxm,rxd,shm', when='+ares')
+    depends_on('mochi-thallium+cereal', when='+mochi')
+    depends_on('argobots@1.1+affinity', when='+mochi')
+
+    # Compression libraries (conditional on +compress)
+    depends_on('lzo', when='+compress')
+    depends_on('bzip2', when='+compress')
+    depends_on('zstd', when='+compress')
+    depends_on('lz4', when='+compress')
+    depends_on('zlib', when='+compress')
+    depends_on('xz', when='+compress')
+    depends_on('brotli', when='+compress')
+    depends_on('snappy', when='+compress')
+    depends_on('c-blosc2', when='+compress')
+
+    # Encryption libraries (conditional on +encrypt)
+    depends_on('openssl', when='+encrypt')
+
+    # GPU support (conditional)
+    depends_on('cuda', when='+cuda')
+    depends_on('rocm-core', when='+rocm')
 
     def cmake_args(self):
         args = []
