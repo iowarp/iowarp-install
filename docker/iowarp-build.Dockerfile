@@ -1,1 +1,1 @@
-FROM iowarp/context-assimilation-engine-build:latest
+FROM iowarp/core-build:latest
