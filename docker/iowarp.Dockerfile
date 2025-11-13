@@ -1,5 +1,5 @@
-# Multi-stage build: Use context-transfer-engine as builder
-FROM iowarp/context-transfer-engine:latest AS builder
+# Multi-stage build: Use iowarp-core as builder
+FROM iowarp/iowarp-core:latest AS builder
 
 # Final deployment stage: Use minimal base image
 FROM iowarp/iowarp-base-minimal:latest
