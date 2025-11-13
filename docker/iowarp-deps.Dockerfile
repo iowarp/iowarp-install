@@ -52,7 +52,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Note: catch2, cereal, yaml-cpp, and nanobind are now submodules in iowarp-core
+# Note: catch2, cereal, yaml-cpp, and nanobind are now submodules in core
 # Note: Skipping c-blosc2 - libblosc-dev from apt should be sufficient
 # If needed later, can build from source with: -DBUILD_EXAMPLES=OFF -DBUILD_FUZZERS=OFF
 ENV OMPI_ALLOW_RUN_AS_ROOT=1
