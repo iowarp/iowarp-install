@@ -21,6 +21,8 @@ class Iowarp(CMakePackage):
     # Build variants
     variant('debug', default=False, description='Build in Debug mode')
     variant('shared', default=True, description='Build shared libraries')
+    variant('test', default=False, description='Enable tests for all components')
+    variant('benchmark', default=False, description='Enable benchmarks for all components')
 
     # Component enable/disable variants
     variant('runtime', default=True, description='Enable Chimaera runtime component')
@@ -123,9 +125,34 @@ class Iowarp(CMakePackage):
         if '+rocm' in self.spec:
             args.append(self.define('HSHM_ENABLE_ROCM', 'ON'))
 
-        # Disable tests and benchmarks for production builds
-        args.append(self.define('HSHM_BUILD_TESTS', 'OFF'))
-        args.append(self.define('HSHM_BUILD_BENCHMARKS', 'OFF'))
+        # Tests and benchmarks
+        if '+test' in self.spec:
+            args.append(self.define('HSHM_ENABLE_TESTS', 'ON'))
+            args.append(self.define('CHIMAERA_ENABLE_TESTS', 'ON'))
+            args.append(self.define('WRP_CTE_ENABLE_TESTS', 'ON'))
+            args.append(self.define('WRP_CAE_ENABLE_TESTS', 'ON'))
+            args.append(self.define('WRP_CEE_ENABLE_TESTS', 'ON'))
+        else:
+            args.append(self.define('HSHM_ENABLE_TESTS', 'OFF'))
+            args.append(self.define('CHIMAERA_ENABLE_TESTS', 'OFF'))
+            args.append(self.define('WRP_CTE_ENABLE_TESTS', 'OFF'))
+            args.append(self.define('WRP_CAE_ENABLE_TESTS', 'OFF'))
+            args.append(self.define('WRP_CEE_ENABLE_TESTS', 'OFF'))
+
+        if '+benchmark' in self.spec:
+            args.append(self.define('WRP_CORE_ENABLE_BENCHMARKS', 'ON'))
+            args.append(self.define('HSHM_ENABLE_BENCHMARKS', 'ON'))
+            args.append(self.define('CHIMAERA_ENABLE_BENCHMARKS', 'ON'))
+            args.append(self.define('WRP_CTE_ENABLE_BENCHMARKS', 'ON'))
+            args.append(self.define('WRP_CAE_ENABLE_BENCHMARKS', 'ON'))
+            args.append(self.define('WRP_CEE_ENABLE_BENCHMARKS', 'ON'))
+        else:
+            args.append(self.define('WRP_CORE_ENABLE_BENCHMARKS', 'OFF'))
+            args.append(self.define('HSHM_ENABLE_BENCHMARKS', 'OFF'))
+            args.append(self.define('CHIMAERA_ENABLE_BENCHMARKS', 'OFF'))
+            args.append(self.define('WRP_CTE_ENABLE_BENCHMARKS', 'OFF'))
+            args.append(self.define('WRP_CAE_ENABLE_BENCHMARKS', 'OFF'))
+            args.append(self.define('WRP_CEE_ENABLE_BENCHMARKS', 'OFF'))
 
         # Chimaera runtime options (if enabled)
         if '+runtime' in self.spec:
