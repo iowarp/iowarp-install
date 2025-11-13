@@ -21,8 +21,8 @@ class Iowarp(CMakePackage):
     # Build variants
     variant('debug', default=False, description='Build in Debug mode')
     variant('shared', default=True, description='Build shared libraries')
-    variant('test', default=False, description='Enable tests for all components')
-    variant('benchmark', default=False, description='Enable benchmarks for all components')
+    variant('test', default=True, description='Enable tests for all components')
+    variant('benchmark', default=True, description='Enable benchmarks for all components')
 
     # Component enable/disable variants
     variant('runtime', default=True, description='Enable Chimaera runtime component')
@@ -127,12 +127,14 @@ class Iowarp(CMakePackage):
 
         # Tests and benchmarks
         if '+test' in self.spec:
+            args.append(self.define('WRP_CORE_ENABLE_TESTS', 'ON'))
             args.append(self.define('HSHM_ENABLE_TESTS', 'ON'))
             args.append(self.define('CHIMAERA_ENABLE_TESTS', 'ON'))
             args.append(self.define('WRP_CTE_ENABLE_TESTS', 'ON'))
             args.append(self.define('WRP_CAE_ENABLE_TESTS', 'ON'))
             args.append(self.define('WRP_CEE_ENABLE_TESTS', 'ON'))
         else:
+            args.append(self.define('WRP_CORE_ENABLE_TESTS', 'OFF'))
             args.append(self.define('HSHM_ENABLE_TESTS', 'OFF'))
             args.append(self.define('CHIMAERA_ENABLE_TESTS', 'OFF'))
             args.append(self.define('WRP_CTE_ENABLE_TESTS', 'OFF'))
