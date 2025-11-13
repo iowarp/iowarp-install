@@ -24,5 +24,4 @@ jobs:
         spack repo add iowarp-spack
         spack install iowarp+posix
         spack load iowarp+posix
-        jarvis init
         
