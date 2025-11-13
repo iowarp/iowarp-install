@@ -1,0 +1,40 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "iowarp"
+dynamic = ["version"]
+description = "A wrapper package that installs both iowarp-agent-toolkit and iowarp-core"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "BSD-3-Clause"
+authors = [
+    {name = "IOWarp Team"}
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+]
+dependencies = [
+    "iowarp-agent-toolkit",
+    "iowarp-core",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/iowarp/iowarp"
+"Bug Tracker" = "https://github.com/iowarp/iowarp/issues"
+
+[tool.setuptools]
+packages = ["iowarp"]
+package-dir = {"" = "src"}
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+local_scheme = "no-local-version"
+tag_regex = "^v(?P<version>\\d+\\.\\d+\\.\\d+)$"
