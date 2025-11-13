@@ -1,5 +1,5 @@
-# Multi-stage build: Use iowarp-core as builder
-FROM iowarp/iowarp-core:latest AS builder
+# Multi-stage build: Use core as builder
+FROM iowarp/core:latest AS builder
 
 # Final deployment stage: Use minimal base image
 FROM iowarp/iowarp-base-minimal:latest
