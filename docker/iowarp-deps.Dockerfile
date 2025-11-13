@@ -26,7 +26,6 @@ RUN apt-get update && apt-get install -y \
 
 # Install core dependencies
 RUN apt-get update && apt-get install -y \
-    libyaml-cpp-dev \
     libboost-all-dev \
     libzmq3-dev \
     libelf-dev \
@@ -53,23 +52,7 @@ RUN apt-get update && apt-get install -y \
     python3-pip \
     && rm -rf /var/lib/apt/lists/*
 
-# Install catch2 from source (using newer version that fixes C++20 issues)
-RUN cd /tmp && \
-    git clone --depth 1 --branch v3.5.2 https://github.com/catchorg/Catch2.git && \
-    cd Catch2 && \
-    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_TESTING=OFF && \
-    cmake --build build -j$(nproc) && \
-    cmake --install build && \
-    cd / && rm -rf /tmp/Catch2
-
-# Install cereal (header-only library) from source
-RUN cd /tmp && \
-    git clone --depth 1 --branch v1.3.2 https://github.com/USCiLab/cereal.git && \
-    cd cereal && \
-    cmake -B build -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DJUST_INSTALL_CEREAL=ON && \
-    cmake --install build && \
-    cd / && rm -rf /tmp/cereal
-
+# Note: catch2, cereal, yaml-cpp, and nanobind are now submodules in iowarp-core
 # Note: Skipping c-blosc2 - libblosc-dev from apt should be sufficient
 # If needed later, can build from source with: -DBUILD_EXAMPLES=OFF -DBUILD_FUZZERS=OFF
 ENV OMPI_ALLOW_RUN_AS_ROOT=1

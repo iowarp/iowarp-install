@@ -24,8 +24,6 @@ RUN apt-get update && apt-get install -y \
     libboost-program-options1.83.0 \
     libboost-context1.83.0 \
     libboost-fiber1.83.0 \
-    # YAML-CPP runtime library
-    libyaml-cpp0.8 \
     # ZeroMQ runtime library
     libzmq5 \
     # OpenSSL runtime library
