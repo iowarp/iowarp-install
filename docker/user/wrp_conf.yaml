@@ -1,6 +1,6 @@
 # IOWarp Runtime Configuration File
 compose:
-  # Compose parameters (do not change these)
+  # Context Transfer Engine (CTE) - handles data buffering and I/O
   - mod_name: wrp_cte_core
     pool_name: wrp_cte
     pool_query: local
@@ -14,3 +14,9 @@ compose:
         bdev_type: "ram"
         capacity_limit: "8GB"
         score: 0.0           # Manual score override (0.0-1.0) - highest tier
+
+  # Context Assimilation Engine (CAE) - handles data processing and transformation
+  - mod_name: wrp_cae_core
+    pool_name: cae_main
+    pool_query: local
+    pool_id: "400.0"

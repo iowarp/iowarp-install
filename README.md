@@ -84,7 +84,7 @@ This is an example with some paramters, but not all:
 ```yaml
 # IOWarp Runtime Configuration File
 compose:
-  # Compose parameters (do not change these)
+  # Context Transfer Engine (CTE) - handles data buffering and I/O
   - mod_name: wrp_cte_core
     pool_name: wrp_cte
     pool_query: local
@@ -110,6 +110,12 @@ compose:
       #   bdev_type: "file"
       #   capacity_limit: "1TB"
       #   score: 1.0
+
+  # Context Assimilation Engine (CAE) - handles data processing and transformation
+  - mod_name: wrp_cae_core
+    pool_name: cae_main
+    pool_query: local
+    pool_id: "400.0"
 ```
 
 **Storage Configuration:**
