@@ -22,27 +22,60 @@ echo "=== IOWarp Installation Script ==="
 echo "Install prefix: $INSTALL_PREFIX"
 echo "Working directory: $WORK_DIR"
 
+# Check for pip installation
+if ! command -v pip &> /dev/null && ! command -v pip3 &> /dev/null; then
+    echo "Error: pip is not installed. Please install pip first:"
+    echo "  - Debian/Ubuntu: sudo apt-get install python3-pip"
+    echo "  - RHEL/CentOS: sudo yum install python3-pip"
+    echo "  - macOS: python3 -m ensurepip --upgrade"
+    exit 1
+fi
+
+# Determine pip command
+if command -v pip3 &> /dev/null; then
+    PIP_CMD="pip3"
+else
+    PIP_CMD="pip"
+fi
+
+# Check for uvx installation, install if not present
+if ! command -v uvx &> /dev/null; then
+    echo "uvx not found, installing uv..."
+    $PIP_CMD install uv
+fi
+
 # Clone iowarp-core repository with submodules
 if [ ! -d "core" ]; then
     echo "Cloning iowarp-core with submodules..."
-    git clone --recurse-submodules --branch 52-attempt-uv-installer https://github.com/iowarp/core.git
+    git clone --recurse-submodules https://github.com/iowarp/core.git
 else
     echo "iowarp-core already exists, skipping clone..."
+fi
+
+# Check if we're in a virtual environment before installing Python packages
+if [ -z "$VIRTUAL_ENV" ] && [ -z "$CONDA_DEFAULT_ENV" ]; then
+    echo "Error: Not running in a Python virtual environment."
+    echo "Please activate a virtual environment first:"
+    echo "  - Create venv: python3 -m venv .venv"
+    echo "  - Activate venv: source .venv/bin/activate"
+    echo "  - Or use conda: conda activate <env-name>"
+    exit 1
 fi
 
 # Run iowarp-core install.sh with INSTALL_PREFIX
 echo "Running iowarp-core install.sh with INSTALL_PREFIX=$INSTALL_PREFIX..."
 cd core
 if [ -f "install.sh" ]; then
-    chmod +x install.sh
-    INSTALL_PREFIX="$INSTALL_PREFIX" ./install.sh
+    # chmod +x install.sh
+    # INSTALL_PREFIX="$INSTALL_PREFIX" ./install.sh
+    pip install .
 else
     echo "Error: install.sh not found in iowarp-core"
     exit 1
 fi
 cd ..
 
-# Install iowarp-agent-toolkit
+# Install iowarp-agent-toolkit using uvx
 echo "Installing iowarp-agent-toolkit..."
 pip install iowarp-agent-toolkit
 
