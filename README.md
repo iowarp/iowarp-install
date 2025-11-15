@@ -33,9 +33,26 @@ This repository provides unified installation methods and tools for the entire I
 
 ## Installation
 
-### 🐳 Docker (Recommended)
+### ⚡ Native Install
 
-Docker provides the easiest way to get started with IOWarp. The `iowarp/iowarp:latest` image includes the complete runtime with buffering services.
+The fastest way to install IOWarp is using our standalone installer script:
+
+```bash
+# Install to /usr/local (requires sudo)
+curl -fsSL https://raw.githubusercontent.com/iowarp/iowarp-install/main/install.sh | bash
+
+# Or install to a custom directory
+curl -fsSL https://raw.githubusercontent.com/iowarp/iowarp-install/main/install.sh | INSTALL_PREFIX=$HOME/iowarp bash
+```
+
+This will:
+- Clone and build IOWarp core with all submodules
+- Install the IOWarp agent toolkit
+- Set up the complete IOWarp environment
+
+### 🐳 Docker
+
+Docker provides an alternative containerized approach. The `iowarp/iowarp:latest` image includes the complete runtime with buffering services.
 
 1. Pull the Docker image:
 ```bash
