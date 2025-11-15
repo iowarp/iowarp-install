@@ -33,9 +33,26 @@ This repository provides unified installation methods and tools for the entire I
 
 ## Installation
 
-### 🐳 Docker (Recommended)
+### ⚡ Native Install
 
-Docker provides the easiest way to get started with IOWarp. The `iowarp/iowarp:latest` image includes the complete runtime with buffering services.
+The fastest way to install IOWarp is using our standalone installer script:
+
+```bash
+# Install to /usr/local (requires sudo)
+curl -fsSL https://raw.githubusercontent.com/iowarp/iowarp-install/main/install.sh | bash
+
+# Or install to a custom directory
+curl -fsSL https://raw.githubusercontent.com/iowarp/iowarp-install/main/install.sh | INSTALL_PREFIX=$HOME/iowarp bash
+```
+
+This will:
+- Clone and build IOWarp core with all submodules
+- Install the IOWarp agent toolkit
+- Set up the complete IOWarp environment
+
+### 🐳 Docker
+
+Docker provides an alternative containerized approach. The `iowarp/iowarp:latest` image includes the complete runtime with buffering services.
 
 1. Pull the Docker image:
 ```bash
@@ -67,7 +84,7 @@ This is an example with some paramters, but not all:
 ```yaml
 # IOWarp Runtime Configuration File
 compose:
-  # Compose parameters (do not change these)
+  # Context Transfer Engine (CTE) - handles data buffering and I/O
   - mod_name: wrp_cte_core
     pool_name: wrp_cte
     pool_query: local
@@ -93,6 +110,12 @@ compose:
       #   bdev_type: "file"
       #   capacity_limit: "1TB"
       #   score: 1.0
+
+  # Context Assimilation Engine (CAE) - handles data processing and transformation
+  - mod_name: wrp_cae_core
+    pool_name: cae_main
+    pool_query: local
+    pool_id: "400.0"
 ```
 
 **Storage Configuration:**
