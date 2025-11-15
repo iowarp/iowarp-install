@@ -14,13 +14,14 @@ set -e  # Exit on error
 : ${INSTALL_PREFIX:=/usr/local}
 
 # Create temporary working directory
-trap "rm -rf $WORK_DIR" EXIT
+WORK_DIR=$(mktemp -d)
+trap "echo 'Cleaning up temporary directory...'; rm -rf '$WORK_DIR'" EXIT
 
 cd "$WORK_DIR"
 
 echo "=== IOWarp Installation Script ==="
 echo "Install prefix: $INSTALL_PREFIX"
-echo "Working directory: $WORK_DIR"
+echo "Temporary directory: $WORK_DIR"
 
 # Check for pip installation
 if ! command -v pip &> /dev/null && ! command -v pip3 &> /dev/null; then

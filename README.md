@@ -38,11 +38,8 @@ This repository provides unified installation methods and tools for the entire I
 One way to install IOWarp is using our standalone installer script:
 
 ```bash
-# Install to /usr/local (requires sudo)
+# Install (uses pip and expects a venv to be active)
 curl -fsSL https://raw.githubusercontent.com/iowarp/iowarp-install/main/install.sh | bash
-
-# Or install to a custom directory
-curl -fsSL https://raw.githubusercontent.com/iowarp/iowarp-install/main/install.sh | INSTALL_PREFIX=$HOME/iowarp bash
 ```
 
 This will:
