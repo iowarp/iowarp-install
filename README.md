@@ -35,7 +35,7 @@ This repository provides unified installation methods and tools for the entire I
 
 ### ⚡ Native Install
 
-The fastest way to install IOWarp is using our standalone installer script:
+One way to install IOWarp is using our standalone installer script:
 
 ```bash
 # Install to /usr/local (requires sudo)
